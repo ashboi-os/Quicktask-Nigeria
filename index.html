@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickTask Nigeria - Micro-Tasks Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-full flex flex-col justify-between" x-data="quickTaskApp()">
+    
+    <!-- HEADER -->
+    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" @click="activeTab = 'tasks'">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-shield-check text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-violet-600 to-emerald-500 bg-clip-text text-transparent">QuickTask</span>
+                    <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Nigeria</span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center space-x-1">
+                <button @click="activeTab = 'tasks'" :class="activeTab === 'tasks' ? 'bg-violet-50 text-violet-700' : 'text-slate-600'" class="px-4 py-2 rounded-lg text-sm font-medium transition">Find Tasks</button>
+                <button @click="activeTab = 'submissions'" :class="activeTab === 'submissions' ? 'bg-violet-50 text-violet-700' : 'text-slate-600'" class="px-4 py-2 rounded-lg text-sm font-medium transition">My Submissions</button>
+                <button @click="activeTab = 'wallet'" :class="activeTab === 'wallet' ? 'bg-violet-50 text-violet-700' : 'text-slate-600'" class="px-4 py-2 rounded-lg text-sm font-medium transition">Wallet</button>
+            </nav>
+
+            <!-- Balance Badge -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl border bg-slate-100 border-slate-200">
+                    <div class="text-xs text-left">
+                        <div class="font-bold text-emerald-600">₦<span x-text="balance.approved"></span></div>
+                        <div class="text-[10px] text-amber-600">+₦<span x-text="balance.pending"></span> pending</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+        
+        <!-- FIND TASKS TAB -->
+        <div x-show="activeTab === 'tasks'" class="space-y-6">
+            <div class="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-700 text-white shadow-xl">
+                <h1 class="text-2xl sm:text-3xl font-extrabold">Perform Small Tasks & Get Paid Instantly</h1>
+                <p class="mt-2 text-sm text-violet-100">Select micro-jobs below, follow instructions, submit proof, and receive wallet credits.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <template x-for="task in tasks" :key="task.id">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-violet-50 text-violet-600" x-text="task.category"></span>
+                                <span class="text-base font-extrabold text-emerald-600">₦<span x-text="task.reward"></span></span>
+                            </div>
+                            <h3 class="text-sm font-bold mb-2" x-text="task.title"></h3>
+                            <p class="text-xs text-slate-500 mb-4" x-text="task.description"></p>
+                        </div>
+                        <button @click="openTaskModal(task)" class="w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-violet-600 text-white hover:bg-violet-700 transition">
+                            Perform Task & Earn
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- WALLET TAB -->
+        <div x-show="activeTab === 'wallet'" class="max-w-xl mx-auto space-y-6">
+            <h2 class="text-xl font-bold">Wallet & Payouts</h2>
+            <div class="p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+                <div class="text-sm font-semibold">Available Balance: <span class="text-emerald-600 font-bold text-lg">₦<span x-text="balance.approved"></span></span></div>
+                <button @click="alert('Withdrawal request submitted successfully!')" class="w-full py-3 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition">
+                    Withdraw to Bank Account
+                </button>
+            </div>
+        </div>
+
+        <!-- SUBMISSIONS TAB -->
+        <div x-show="activeTab === 'submissions'" class="space-y-4">
+            <h2 class="text-xl font-bold">My Submissions</h2>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 text-xs text-slate-500">
+                No active pending submissions. Complete tasks from the feed to see them here!
+            </div>
+        </div>
+    </main>
+
+    <!-- TASK MODAL -->
+    <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm" style="display: none;">
+        <div class="bg-white w-full max-w-lg rounded-2xl p-6 space-y-4">
+            <h3 class="text-base font-bold" x-text="currentTask?.title"></h3>
+            <p class="text-xs text-slate-500" x-text="currentTask?.description"></p>
+            <div>
+                <label class="block text-xs font-bold mb-1">Proof Username / Details</label>
+                <input type="text" x-model="proofText" placeholder="e.g. @your_handle" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 outline-none">
+            </div>
+            <div class="flex gap-3 pt-2">
+                <button @click="submitTask()" class="flex-1 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl">Submit Proof</button>
+                <button @click="showModal = false" class="px-4 py-2.5 bg-slate-100 text-slate-600 text-xs font-bold rounded-xl">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function quickTaskApp() {
+            return {
+                activeTab: 'tasks',
+                balance: { approved: 1200, pending: 250 },
+                showModal: false,
+                currentTask: null,
+                proofText: '',
+                tasks: [
+                    { id: 1, title: 'Subscribe to YouTube Channel & Ring Bell', category: 'Social Media', reward: 150, description: 'Subscribe and turn on all post notifications.' },
+                    { id: 2, title: 'Download & Test FinTech App', category: 'Mobile Apps', reward: 450, description: 'Install app from Play Store and keep for 24 hours.' },
+                    { id: 3, title: 'Leave 5-Star Review on Google Maps', category: 'Reviews', reward: 300, description: 'Write a genuine positive review for a local store.' }
+                ],
+                openTaskModal(task) {
+                    this.currentTask = task;
+                    this.proofText = '';
+                    this.showModal = true;
+                },
+                submitTask() {
+                    if (!this.proofText) { alert('Please enter proof details'); return; }
+                    this.balance.pending += this.currentTask.reward;
+                    this.showModal = false;
+                    alert('Task proof submitted successfully!');
+                    this.activeTab = 'submissions';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
