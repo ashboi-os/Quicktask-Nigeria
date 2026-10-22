@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- EmailJS SDK for Real Email Verification -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased font-sans min-h-screen pb-20" x-data="taskApp()">
@@ -69,7 +68,7 @@
                 </div>
             </template>
 
-            <!-- REAL EMAIL VERIFICATION CODE ENTRY -->
+            <!-- EMAIL VERIFICATION CODE ENTRY -->
             <template x-if="pendingVerification">
                 <div class="text-center space-y-4">
                     <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl">
@@ -78,7 +77,7 @@
                     <h3 class="font-bold text-gray-900 text-base">Check Your Email Inbox</h3>
                     <p class="text-xs text-gray-500">We sent a 4-digit verification code to <span class="font-bold text-indigo-600" x-text="authEmail"></span>.</p>
                     
-                    <input type="text" x-model="verificationCodeInput" maxlength="4" placeholder="Enter 4-digit code" class="w-40 text-center text-lg font-bold tracking-widest px-3 py-2 border border-gray-300 rounded-lg mx-auto block focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <input type="text" x-model="verificationCodeInput" maxlength="4" placeholder="Enter code" class="w-40 text-center text-lg font-bold tracking-widest px-3 py-2 border border-gray-300 rounded-lg mx-auto block focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                     
                     <button @click="verifyEmailCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-lg shadow transition">
                         Verify & Claim ₦1,500 Bonus
@@ -107,14 +106,13 @@
                     </div>
                 </div>
 
-                <!-- Wallet & Quick Actions -->
                 <div class="flex items-center space-x-2">
                     <button @click="showWithdrawModal = true" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl px-3 py-1 text-right shadow-inner transition">
                         <div class="text-xs font-extrabold text-emerald-700 flex items-center justify-end space-x-0.5">
                             <span>₦</span><span x-text="wallet.balance.toLocaleString()"></span>
                         </div>
                         <div class="text-[9px] text-indigo-600 font-semibold">
-                            <i class="fa-solid fa-wallet"></i> Tap to Withdraw
+                            <i class="fa-solid fa-wallet"></i> Withdraw
                         </div>
                     </button>
                 </div>
@@ -123,11 +121,10 @@
 
         <!-- 1. HOME TAB -->
         <main class="max-w-md mx-auto px-4 pt-4" x-show="currentNav === 'home'">
-            <!-- BANNER OVERVIEW -->
             <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden mb-4">
                 <div class="relative z-10">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-indigo-200 font-semibold">Tier: <strong class="text-amber-300 uppercase" x-text="currentUser.tier || 'Free Worker'"></strong></span>
+                        <span class="text-xs text-indigo-200 font-semibold">Tier: <strong class="text-amber-300 uppercase" x-text="currentUser.tier || 'Free Tier'"></strong></span>
                         <span class="text-[10px] bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm">Payout: 20th Monthly</span>
                     </div>
                     
@@ -138,14 +135,14 @@
                         </div>
                         <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm border border-white/10">
                             <span class="text-[10px] text-indigo-200 block">Daily Limit</span>
-                            <span class="text-base font-extrabold"><span x-text="todayTaskCount"></span> / <span x-text="dailyLimit"></span> Completed</span>
+                            <span class="text-base font-extrabold"><span x-text="todayTaskCount"></span> / <span x-text="dailyLimit === 999 ? '∞' : dailyLimit"></span> Done</span>
                         </div>
                     </div>
 
                     <div class="flex space-x-2">
                         <button @click="showUpgradeModal = true" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 rounded-lg transition shadow-sm flex items-center justify-center space-x-1">
                             <i class="fa-solid fa-crown"></i>
-                            <span>Upgrade Task Limit</span>
+                            <span>Upgrade Tier</span>
                         </button>
                         <button @click="showReferralModal = true" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center space-x-1">
                             <i class="fa-solid fa-users"></i>
@@ -155,7 +152,6 @@
                 </div>
             </div>
 
-            <!-- QUICK ACCESS TILES -->
             <div class="grid grid-cols-2 gap-3 mb-4">
                 <button @click="currentNav = 'earn'" class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-left hover:border-indigo-500 transition">
                     <i class="fa-solid fa-briefcase text-indigo-600 text-xl mb-1"></i>
@@ -170,20 +166,18 @@
             </div>
         </main>
 
-        <!-- 2. EARN / TASKS TAB -->
+        <!-- 2. EARN TAB -->
         <main class="max-w-md mx-auto px-4 pt-4" x-show="currentNav === 'earn'">
-            <!-- Daily Limit Alert -->
             <template x-if="todayTaskCount >= dailyLimit">
                 <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 flex items-center space-x-2 text-xs text-amber-800">
                     <i class="fa-solid fa-circle-info text-amber-600 text-base"></i>
                     <div>
                         <strong class="block font-bold">Daily Limit Reached!</strong>
-                        <span>You completed <span x-text="todayTaskCount"></span>/<span x-text="dailyLimit"></span> tasks today. Upgrade tier or check back tomorrow!</span>
+                        <span>Completed <span x-text="todayTaskCount"></span>/<span x-text="dailyLimit"></span> tasks today. Upgrade tier or check back tomorrow!</span>
                     </div>
                 </div>
             </template>
 
-            <!-- Category Pills -->
             <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
                 <template x-for="cat in categories" :key="cat">
                     <button @click="selectedCategory = cat" 
@@ -194,7 +188,6 @@
                 </template>
             </div>
 
-            <!-- Task List -->
             <div class="space-y-3 mt-3">
                 <template x-for="task in filteredTasks" :key="task.id">
                     <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition">
@@ -229,7 +222,6 @@
                 <span class="inline-block mt-2 text-[10px] bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-full uppercase" x-text="currentUser.tier || 'Free Tier'"></span>
             </div>
 
-            <!-- STATS CARD -->
             <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
                 <div class="flex justify-between items-center text-xs pb-2 border-b border-gray-100">
                     <span class="text-gray-500">Total Submissions</span>
@@ -302,50 +294,95 @@
             </div>
         </nav>
 
-        <!-- MODAL 1: VIP UPGRADE TIERS -->
+        <!-- UPGRADE MODAL WITH DIRECT BANK TRANSFER DETAILS -->
         <div x-show="showUpgradeModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative">
-                <button @click="showUpgradeModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+            <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                <button @click="showUpgradeModal = false; selectedTierPayment = null;" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
+
                 <h3 class="font-bold text-base text-gray-900 mb-1">Upgrade Account Tier</h3>
-                <p class="text-xs text-gray-500 mb-4">Unlock more daily micro-tasks to increase your earnings.</p>
+                <p class="text-xs text-gray-500 mb-4">Select a tier below to unlock more daily tasks and higher earnings.</p>
 
-                <div class="space-y-3">
-                    <div class="border p-3 rounded-xl flex justify-between items-center" :class="currentUser.tier === 'Bronze' ? 'border-amber-500 bg-amber-50' : 'border-gray-200'">
-                        <div>
-                            <h4 class="font-bold text-xs text-gray-900">Bronze Worker (5 Tasks/Day)</h4>
-                            <p class="text-[10px] text-gray-500">Earn up to ₦1,000 daily</p>
+                <!-- TIER SELECTION LIST -->
+                <template x-if="!selectedTierPayment">
+                    <div class="space-y-3">
+                        <div class="border p-3.5 rounded-xl flex justify-between items-center border-amber-300 bg-amber-50/50">
+                            <div>
+                                <h4 class="font-bold text-xs text-gray-900 flex items-center gap-1">
+                                    <i class="fa-solid fa-award text-amber-600"></i> Bronze Worker
+                                </h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">5 Tasks / Day (Earn ₦1,000 daily)</p>
+                            </div>
+                            <button @click="selectTierForPayment('Bronze', 800)" class="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">₦800</button>
                         </div>
-                        <button @click="upgradeTier('Bronze')" class="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">₦1,000</button>
-                    </div>
 
-                    <div class="border p-3 rounded-xl flex justify-between items-center" :class="currentUser.tier === 'Gold' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'">
-                        <div>
-                            <h4 class="font-bold text-xs text-gray-900">Gold VIP (Unlimited Tasks)</h4>
-                            <p class="text-[10px] text-gray-500">Earn unlimited daily rewards</p>
+                        <div class="border p-3.5 rounded-xl flex justify-between items-center border-slate-300 bg-slate-50/50">
+                            <div>
+                                <h4 class="font-bold text-xs text-gray-900 flex items-center gap-1">
+                                    <i class="fa-solid fa-medal text-slate-500"></i> Silver Worker
+                                </h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">15 Tasks / Day (Earn ₦3,000 daily)</p>
+                            </div>
+                            <button @click="selectTierForPayment('Silver', 3500)" class="bg-slate-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">₦3,500</button>
                         </div>
-                        <button @click="upgradeTier('Gold')" class="bg-yellow-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg">₦2,500</button>
+
+                        <div class="border p-3.5 rounded-xl flex justify-between items-center border-yellow-400 bg-yellow-50/50">
+                            <div>
+                                <h4 class="font-bold text-xs text-gray-900 flex items-center gap-1">
+                                    <i class="fa-solid fa-crown text-yellow-600"></i> Gold VIP
+                                </h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Unlimited Daily Tasks</p>
+                            </div>
+                            <button @click="selectTierForPayment('Gold', 7500)" class="bg-yellow-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">₦7,500</button>
+                        </div>
                     </div>
-                </div>
+                </template>
+
+                <!-- BANK DETAILS & TRANSFER PROOF -->
+                <template x-if="selectedTierPayment">
+                    <div>
+                        <button @click="selectedTierPayment = null" class="text-xs text-indigo-600 font-bold mb-3 flex items-center gap-1">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Tiers
+                        </button>
+
+                        <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-center mb-4">
+                            <span class="text-xs text-indigo-800 font-semibold uppercase block">Amount to Transfer</span>
+                            <span class="text-2xl font-black text-indigo-600">₦<span x-text="selectedTierPayment.price.toLocaleString()"></span></span>
+                            <span class="text-[11px] text-gray-500 block mt-1">Tier: <strong x-text="selectedTierPayment.name"></strong></span>
+                        </div>
+
+                        <div class="bg-gray-100 p-4 rounded-xl space-y-2 border border-gray-200 text-xs mb-4">
+                            <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                                <span class="text-gray-500">Bank Name:</span>
+                                <strong class="text-gray-900">YOUR_BANK_NAME</strong>
+                            </div>
+                            <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                                <span class="text-gray-500">Account Number:</span>
+                                <strong class="text-indigo-600 text-sm font-mono">YOUR_ACCOUNT_NUMBER</strong>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-500">Account Name:</span>
+                                <strong class="text-gray-900">YOUR_ACCOUNT_NAME</strong>
+                            </div>
+                        </div>
+
+                        <form @submit.prevent="confirmTierPayment()" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Sender Bank Account Name</label>
+                                <input type="text" x-model="paymentSenderName" required placeholder="Name on your bank account" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg shadow transition flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>I Have Made the Transfer</span>
+                            </button>
+                        </form>
+                    </div>
+                </template>
             </div>
         </div>
 
-        <!-- MODAL 2: ADMIN PANEL -->
-        <div x-show="showAdminModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative">
-                <button @click="showAdminModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-                <h3 class="font-bold text-base text-gray-900 mb-2">Admin Dashboard Panel</h3>
-                <div class="bg-gray-100 p-3 rounded-xl space-y-2 text-xs">
-                    <div class="flex justify-between"><span>Registered Workers:</span><strong>1 Active User</strong></div>
-                    <div class="flex justify-between"><span>Pending Payout Batch:</span><strong class="text-emerald-600">Scheduled for 20th</strong></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- MODAL 3: WITHDRAWAL -->
+        <!-- WITHDRAWAL MODAL -->
         <div x-show="showWithdrawModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative">
                 <button @click="showWithdrawModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -373,12 +410,12 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">10-Digit Account Number</label>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Account Number</label>
                         <input type="number" x-model="withdrawData.accountNumber" required placeholder="0123456789" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Amount to Withdraw (₦)</label>
-                        <input type="number" x-model.number="withdrawData.amount" min="7000" required placeholder="Minimum 7000" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Amount (₦)</label>
+                        <input type="number" x-model.number="withdrawData.amount" min="7000" required placeholder="7000" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg shadow transition">
                         Submit Withdrawal Request
@@ -387,86 +424,48 @@
             </div>
         </div>
 
-        <!-- MODAL 4: REFERRAL -->
+        <!-- REFERRAL MODAL -->
         <div x-show="showReferralModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative text-center">
                 <button @click="showReferralModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-                <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-2 text-lg">
-                    <i class="fa-solid fa-users"></i>
-                </div>
                 <h3 class="font-bold text-base text-gray-900">Refer & Earn ₦250</h3>
                 <p class="text-xs text-gray-500 mb-4">Share your personal link with friends. Earn ₦250 instantly when they join!</p>
-
                 <div class="bg-gray-100 p-2.5 rounded-lg flex items-center justify-between border border-gray-200 mb-3">
                     <span class="text-xs font-mono text-indigo-600 truncate mr-2" x-text="referralLink"></span>
                     <button @click="copyReferralLink()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-md">Copy</button>
                 </div>
-                <p class="text-[11px] text-gray-400">Total Referrals: <strong class="text-gray-700" x-text="referrals.length"></strong></p>
             </div>
         </div>
 
-        <!-- MODAL 5: CUSTOMER SUPPORT -->
+        <!-- SUPPORT MODAL -->
         <div x-show="showSupportModal" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative">
                 <button @click="showSupportModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-                <div class="flex items-center space-x-2 mb-2">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    <h3 class="font-bold text-base text-gray-900">Customer Support</h3>
-                </div>
-                <p class="text-xs text-gray-500 mb-4">Need help with tasks or payouts? Send a message to our support team.</p>
-
+                <h3 class="font-bold text-base text-gray-900 mb-2">Customer Support</h3>
                 <form @submit.prevent="submitSupportTicket()" class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Issue Topic</label>
-                        <select x-model="supportTopic" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            <option value="Task Approval">Task Limits & Daily Payouts</option>
-                            <option value="Withdrawal Payout">Withdrawal & Payouts (20th Batch)</option>
-                            <option value="Account Issue">Account & Referral Bonus</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Message</label>
-                        <textarea x-model="supportMessage" required rows="3" placeholder="Describe your issue in detail..." class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-lg shadow transition">
-                        Send Message to Support
-                    </button>
+                    <textarea x-model="supportMessage" required rows="3" placeholder="Describe your issue..." class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                    <button type="submit" class="w-full bg-indigo-600 text-white font-bold text-xs py-3 rounded-lg shadow">Send Message</button>
                 </form>
             </div>
         </div>
 
-        <!-- MODAL 6: TASK PROOF -->
+        <!-- TASK PROOF MODAL -->
         <div x-show="selectedTask !== null" x-cloak class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl relative">
                 <button @click="selectedTask = null" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-                
                 <template x-if="selectedTask">
                     <div>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600" x-text="selectedTask.category"></span>
-                        <h3 class="font-bold text-base text-gray-900 mt-1" x-text="selectedTask.title"></h3>
+                        <h3 class="font-bold text-base text-gray-900" x-text="selectedTask.title"></h3>
                         <p class="text-xs text-gray-500 mt-1" x-text="selectedTask.instructions"></p>
-                        
-                        <div class="mt-4 bg-emerald-50 border border-emerald-100 p-3 rounded-lg flex items-center justify-between">
-                            <span class="text-xs text-emerald-800 font-semibold">Instant Reward Payout:</span>
-                            <span class="font-extrabold text-emerald-700 text-sm">₦200</span>
-                        </div>
-
                         <form @submit.prevent="submitProof()" class="mt-4 space-y-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Verification Handle or Username</label>
-                                <input type="text" x-model="proofInput" required placeholder="e.g. @your_handle" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            </div>
-                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg shadow transition">
-                                Submit & Claim ₦200 Instantly
-                            </button>
+                            <input type="text" x-model="proofInput" required placeholder="e.g. @your_handle" class="w-full text-xs px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <button type="submit" class="w-full bg-emerald-600 text-white font-bold text-xs py-3 rounded-lg shadow">Submit & Earn ₦200</button>
                         </form>
                     </div>
                 </template>
@@ -474,11 +473,11 @@
         </div>
     </div>
 
-    <!-- ALPINE.JS APP LOGIC -->
+    <!-- ALPINE.JS CONTROLLER SCRIPT -->
     <script>
         function taskApp() {
             return {
-                currentNav: 'home', // 'home', 'earn', 'profile', 'settings'
+                currentNav: 'home',
                 isLoggedIn: JSON.parse(localStorage.getItem('qt_user')) ? true : false,
                 pendingVerification: false,
                 isSendingCode: false,
@@ -499,6 +498,8 @@
                 showSupportModal: false,
                 showUpgradeModal: false,
                 showAdminModal: false,
+                selectedTierPayment: null,
+                paymentSenderName: '',
                 proofInput: '',
                 
                 wallet: JSON.parse(localStorage.getItem('qt_wallet')) || { balance: 1500 },
@@ -506,20 +507,20 @@
                 referrals: JSON.parse(localStorage.getItem('qt_referrals')) || [],
                 
                 withdrawData: { bank: '', accountNumber: '', amount: 7000 },
-                supportTopic: 'Task Approval',
                 supportMessage: '',
 
                 tasks: JSON.parse(localStorage.getItem('qt_tasks')) || [
-                    { id: 1, category: 'Social Media', title: 'Subscribe to YouTube Channel & Ring Bell', description: 'Subscribe and turn on all post notifications for a local channel.', instructions: 'Click the link, hit Subscribe, enable all notifications, and submit your YouTube handle.', reward: 200 },
-                    { id: 2, category: 'Mobile Apps', title: 'Download & Test FinTech App', description: 'Install app from Play Store and keep for 24 hours.', instructions: 'Search for the app on Play Store, install it, open it once, and submit your phone number.', reward: 200 },
-                    { id: 3, category: 'Reviews', title: 'Leave 5-Star Review on Google Maps', description: 'Write a genuine positive review for a local store.', instructions: 'Visit the Google Maps listing, leave 5 stars with a brief review, and submit your Google name.', reward: 200 },
-                    { id: 4, category: 'Surveys', title: 'Complete 3-Minute Consumer Survey', description: 'Share your buying preferences in Lagos/Abuja.', instructions: 'Answer all 10 questions in the Google form and submit your email used.', reward: 200 }
+                    { id: 1, category: 'Social Media', title: 'Subscribe to YouTube Channel & Ring Bell', description: 'Subscribe and turn on all post notifications for a local channel.', instructions: 'Click link, hit Subscribe, enable notifications, and submit handle.', reward: 200 },
+                    { id: 2, category: 'Mobile Apps', title: 'Download & Test FinTech App', description: 'Install app from Play Store and keep for 24 hours.', instructions: 'Install from Play Store, open once, and submit phone number.', reward: 200 },
+                    { id: 3, category: 'Reviews', title: 'Leave 5-Star Review on Google Maps', description: 'Write a genuine positive review for a local store.', instructions: 'Leave 5 stars with brief review and submit Google profile name.', reward: 200 },
+                    { id: 4, category: 'Surveys', title: 'Complete 3-Minute Consumer Survey', description: 'Share your buying preferences in Lagos/Abuja.', instructions: 'Answer questions in form and submit email used.', reward: 200 }
                 ],
 
                 get dailyLimit() {
                     if (this.currentUser.tier === 'Bronze') return 5;
+                    if (this.currentUser.tier === 'Silver') return 15;
                     if (this.currentUser.tier === 'Gold') return 999;
-                    return 2; // Free Tier default
+                    return 2;
                 },
 
                 get todayTaskCount() {
@@ -547,48 +548,44 @@
                 async initiateSignUp() {
                     if (!this.authName || !this.authEmail) return;
                     this.isSendingCode = true;
-
-                    // Generate dynamic 4-digit code
                     this.generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-
-                    try {
-                        // EmailJS integration (Free live email API dispatch)
-                        // If no EmailJS key provided, fallback alert shows generated OTP for instant demo
-                        alert('Verification Code sent to ' + this.authEmail + '! (Your OTP Code is: ' + this.generatedOtp + ')');
-                        this.pendingVerification = true;
-                    } catch (e) {
-                        alert('Verification code error. Try again.');
-                    } finally {
-                        this.isSendingCode = false;
-                    }
+                    
+                    alert('Verification Code sent! (Your OTP Code is: ' + this.generatedOtp + ')');
+                    this.pendingVerification = true;
+                    this.isSendingCode = false;
                 },
 
                 verifyEmailCode() {
                     if (this.verificationCodeInput !== this.generatedOtp) {
-                        alert('Invalid verification code! Please check your code and try again.');
+                        alert('Invalid verification code!');
                         return;
                     }
                     this.currentUser = { name: this.authName, email: this.authEmail, tier: 'Free' };
-                    this.wallet.balance = 1500; // Welcome Bonus
+                    this.wallet.balance = 1500;
                     localStorage.setItem('qt_user', JSON.stringify(this.currentUser));
                     localStorage.setItem('qt_wallet', JSON.stringify(this.wallet));
                     this.isLoggedIn = true;
                     this.pendingVerification = false;
-                    alert('Email verified successfully! ₦1,500 welcome bonus credited to your wallet.');
+                    alert('Email verified! ₦1,500 welcome bonus credited.');
                 },
 
                 handleLogout() {
                     localStorage.removeItem('qt_user');
                     this.isLoggedIn = false;
-                    this.authEmail = '';
-                    this.authPassword = '';
                 },
 
-                upgradeTier(tierName) {
-                    this.currentUser.tier = tierName;
+                selectTierForPayment(tierName, price) {
+                    this.selectedTierPayment = { name: tierName, price: price };
+                },
+
+                confirmTierPayment() {
+                    if (!this.paymentSenderName.trim()) return;
+                    alert('Transfer notification received! Account upgraded to ' + this.selectedTierPayment.name + ' Tier once confirmed.');
+                    this.currentUser.tier = this.selectedTierPayment.name;
                     localStorage.setItem('qt_user', JSON.stringify(this.currentUser));
                     this.showUpgradeModal = false;
-                    alert('Account upgraded to ' + tierName + ' Tier! Your daily limit has increased.');
+                    this.selectedTierPayment = null;
+                    this.paymentSenderName = '';
                 },
 
                 openTaskModal(task) {
@@ -602,12 +599,6 @@
 
                 submitProof() {
                     if (!this.proofInput.trim()) return;
-                    if (this.todayTaskCount >= this.dailyLimit) {
-                        alert('Daily task limit reached!');
-                        this.selectedTask = null;
-                        return;
-                    }
-
                     const now = new Date();
                     this.wallet.balance += 200;
                     this.submissions.unshift({
@@ -620,40 +611,33 @@
 
                     localStorage.setItem('qt_wallet', JSON.stringify(this.wallet));
                     localStorage.setItem('qt_submissions', JSON.stringify(this.submissions));
-                    alert('Task completed! ₦200 credited directly to your balance.');
+                    alert('Task completed! ₦200 credited.');
                     this.selectedTask = null;
                 },
 
                 processWithdrawal() {
                     if (this.withdrawData.amount < 7000) {
-                        alert('Minimum withdrawal amount is ₦7,000.');
+                        alert('Minimum withdrawal is ₦7,000.');
                         return;
                     }
                     if (this.withdrawData.amount > this.wallet.balance) {
-                        alert('Insufficient balance! You have ₦' + this.wallet.balance);
+                        alert('Insufficient balance!');
                         return;
                     }
-                    if (this.withdrawData.accountNumber.length < 10) {
-                        alert('Please enter a valid 10-digit NUBAN account number.');
-                        return;
-                    }
-
                     this.wallet.balance -= this.withdrawData.amount;
                     localStorage.setItem('qt_wallet', JSON.stringify(this.wallet));
                     this.showWithdrawModal = false;
-
-                    alert('Withdrawal request of ₦' + this.withdrawData.amount.toLocaleString() + ' submitted successfully! Payouts are processed on the 20th of each month.');
-                    this.withdrawData = { bank: '', accountNumber: '', amount: 7000 };
+                    alert('Withdrawal request submitted! Payouts process on the 20th of each month.');
                 },
 
                 copyReferralLink() {
                     navigator.clipboard.writeText(this.referralLink);
-                    alert('Referral link copied to clipboard!');
+                    alert('Referral link copied!');
                 },
 
                 submitSupportTicket() {
                     if (!this.supportMessage.trim()) return;
-                    alert('Support ticket submitted successfully! Our team will respond via email shortly.');
+                    alert('Support ticket submitted!');
                     this.showSupportModal = false;
                     this.supportMessage = '';
                 }
