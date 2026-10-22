@@ -27,7 +27,7 @@
         <div id="navUserName" class="text-sm font-semibold text-gray-200">User</div>
         <span id="navUserTier" class="text-xs bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Free Tier</span>
       </div>
-      <button id="logoutBtn" class="text-gray-400 hover:text-white p-2">
+      <button id="logoutBtn" type="button" class="text-gray-400 hover:text-white p-2">
         <i class="fas fa-sign-out-alt text-lg"></i>
       </button>
     </div>
@@ -41,7 +41,7 @@
       <h2 id="authTitle" class="text-2xl font-bold mb-4 text-center text-emerald-400">Welcome to QuickTask</h2>
       
       <!-- LOGIN FORM -->
-      <form id="loginForm" class="space-y-4">
+      <form id="loginForm" class="space-y-4" onsubmit="return false;">
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
           <input type="email" id="loginEmail" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
@@ -50,7 +50,7 @@
           <label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
           <input type="password" id="loginPassword" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
-        <button type="submit" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Login</button>
+        <button type="submit" id="loginSubmitBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Login</button>
         <div class="flex justify-between text-xs text-emerald-400 pt-2">
           <button type="button" id="toRegister">Create Account</button>
           <button type="button" id="toForgot">Forgot Password?</button>
@@ -58,7 +58,7 @@
       </form>
 
       <!-- REGISTER FORM -->
-      <form id="registerForm" class="space-y-4 hidden">
+      <form id="registerForm" class="space-y-4 hidden" onsubmit="return false;">
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Full Name</label>
           <input type="text" id="regName" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
@@ -71,19 +71,19 @@
           <label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
           <input type="password" id="regPassword" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
-        <button type="submit" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Register</button>
+        <button type="submit" id="registerSubmitBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Register</button>
         <div class="text-center text-xs text-emerald-400 pt-2">
           <button type="button" id="toLogin">Already have an account? Login</button>
         </div>
       </form>
 
       <!-- FORGOT PASSWORD FORM -->
-      <form id="forgotForm" class="space-y-4 hidden">
+      <form id="forgotForm" class="space-y-4 hidden" onsubmit="return false;">
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Your Registered Email</label>
           <input type="email" id="forgotEmail" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
-        <button type="submit" id="sendOtpBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Send OTP via Email</button>
+        <button type="button" id="sendOtpBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Send OTP via Email</button>
         
         <div id="otpVerifySection" class="hidden space-y-3 pt-3 border-t border-slate-700">
           <div>
@@ -111,7 +111,7 @@
         <div class="text-4xl font-black text-emerald-400 mt-1">₦<span id="userBalance">0</span></div>
         <div class="mt-4 flex justify-between items-center text-xs text-gray-300">
           <span>Tasks Completed: <strong id="completedCount" class="text-white">0</strong> / <span id="maxTasks">20</span></span>
-          <button id="openUpgradeModal" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow">
+          <button type="button" id="openUpgradeModal" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow">
             <i class="fas fa-crown"></i> Upgrade Tier
           </button>
         </div>
@@ -144,7 +144,7 @@
         <h2 class="text-xl font-bold text-amber-400 flex items-center gap-2">
           <i class="fas fa-user-shield"></i> Admin Control Panel
         </h2>
-        <button id="closeAdminBtn" class="text-gray-400 hover:text-white text-sm">Exit Admin</button>
+        <button type="button" id="closeAdminBtn" class="text-gray-400 hover:text-white text-sm">Exit Admin</button>
       </div>
 
       <!-- PENDING TIER APPROVALS -->
@@ -171,7 +171,7 @@
     <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-700 pb-2">
         <h3 class="text-lg font-bold text-white">Choose Membership Tier</h3>
-        <button id="closeUpgradeModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+        <button type="button" id="closeUpgradeModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
       </div>
 
       <!-- TIERS GRID -->
@@ -181,7 +181,7 @@
             <div class="font-bold text-amber-400">Bronze Tier</div>
             <div class="text-xs text-gray-400">Unlock 50 Tasks / Day</div>
           </div>
-          <button class="select-tier-btn bg-amber-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Bronze" data-price="800">
+          <button type="button" class="select-tier-btn bg-amber-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Bronze" data-price="800">
             ₦800
           </button>
         </div>
@@ -191,7 +191,7 @@
             <div class="font-bold text-slate-200">Silver Tier</div>
             <div class="text-xs text-gray-400">Unlock 150 Tasks / Day</div>
           </div>
-          <button class="select-tier-btn bg-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Silver" data-price="3500">
+          <button type="button" class="select-tier-btn bg-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Silver" data-price="3500">
             ₦3,500
           </button>
         </div>
@@ -201,7 +201,7 @@
             <div class="font-bold text-yellow-400">Gold Tier</div>
             <div class="text-xs text-gray-400">Unlimited Tasks / Day</div>
           </div>
-          <button class="select-tier-btn bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Gold" data-price="7500">
+          <button type="button" class="select-tier-btn bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Gold" data-price="7500">
             ₦7,500
           </button>
         </div>
@@ -221,7 +221,7 @@
           <input type="text" id="paymentRef" placeholder="e.g. John Doe - Transfer" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs mt-1">
         </div>
 
-        <button id="submitUpgradePayment" class="w-full accent-btn py-2.5 rounded-lg text-center text-xs font-bold">
+        <button type="button" id="submitUpgradePayment" class="w-full accent-btn py-2.5 rounded-lg text-center text-xs font-bold">
           Submit Payment for Verification
         </button>
       </div>
@@ -230,7 +230,11 @@
 
   <script>
     // Initialize EmailJS
-    emailjs.init("VnLgDFgP-a5hUnI6r");
+    try {
+      emailjs.init("VnLgDFgP-a5hUnI6r");
+    } catch(err) {
+      console.log("EmailJS init note:", err);
+    }
 
     const EMAILJS_SERVICE_ID = "service_chv20qp";
     const EMAILJS_TEMPLATE_ID = "template_4v8vh0v";
@@ -304,15 +308,41 @@
       authTitle.innerText = "Welcome to QuickTask";
     }
 
-    // User Registration
-    registerForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+    // Process Login Logic
+    function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+
+      const user = users.find(u => u.email === email && u.password === password);
+      if (user) {
+        currentUser = user;
+        saveCurrentUser();
+        initDashboard();
+      } else {
+        alert("Account not found or password incorrect. If this is a new session, please click 'Create Account' first.");
+      }
+    }
+
+    // Process Registration Logic
+    function handleRegister() {
       const name = document.getElementById('regName').value.trim();
       const email = document.getElementById('regEmail').value.trim().toLowerCase();
       const password = document.getElementById('regPassword').value;
 
+      if (!name || !email || !password) {
+        alert("Please fill in all registration fields.");
+        return;
+      }
+
       if (users.find(u => u.email === email)) {
-        alert("An account with this email already exists.");
+        alert("An account with this email already exists. Please log in.");
+        showLoginForm();
+        document.getElementById('loginEmail').value = email;
         return;
       }
 
@@ -333,23 +363,13 @@
       currentUser = newUser;
       saveCurrentUser();
       initDashboard();
-    });
+    }
 
-    // User Login
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-      const password = document.getElementById('loginPassword').value;
+    document.getElementById('loginSubmitBtn').addEventListener('click', handleLogin);
+    document.getElementById('registerSubmitBtn').addEventListener('click', handleRegister);
 
-      const user = users.find(u => u.email === email && u.password === password);
-      if (user) {
-        currentUser = user;
-        saveCurrentUser();
-        initDashboard();
-      } else {
-        alert("Invalid email or password.");
-      }
-    });
+    loginForm.addEventListener('submit', (e) => { e.preventDefault(); handleLogin(); });
+    registerForm.addEventListener('submit', (e) => { e.preventDefault(); handleRegister(); });
 
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -363,13 +383,16 @@
     });
 
     // Send OTP via EmailJS
-    document.getElementById('sendOtpBtn').addEventListener('click', async (e) => {
-      e.preventDefault();
+    document.getElementById('sendOtpBtn').addEventListener('click', async () => {
       const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
-      const user = users.find(u => u.email === email);
+      if (!email) {
+        alert("Please enter your registered email address.");
+        return;
+      }
 
+      const user = users.find(u => u.email === email);
       if (!user) {
-        alert("No account found with this email.");
+        alert("No account found with this email on this device/browser.");
         return;
       }
 
@@ -391,7 +414,7 @@
         sendBtn.innerText = "Resend OTP";
       } catch (err) {
         console.error("EmailJS Error:", err);
-        alert("Failed to send OTP email. Please check your network and EmailJS configuration.");
+        alert("Failed to send OTP email. Please check your network connection.");
         sendBtn.innerText = "Send OTP via Email";
       } finally {
         sendBtn.disabled = false;
@@ -416,8 +439,10 @@
       if (user) {
         user.password = newPass;
         saveUsers();
-        alert("Password reset successfully! Please login with your new password.");
-        showLoginForm();
+        alert("Password reset successfully! Logging you in...");
+        currentUser = user;
+        saveCurrentUser();
+        initDashboard();
       }
     });
 
@@ -471,7 +496,7 @@
           const secondsRemaining = Math.ceil((pendingUntil - now) / 1000);
           const mins = Math.floor(secondsRemaining / 60);
           const secs = (secondsRemaining % 60).toString().padStart(2, '0');
-          actionBtnHTML = `<button disabled class="bg-amber-900/60 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/40 font-mono"><i class="fas fa-clock animate-spin"></i> Pending (${mins}:${secs})</button>`;
+          actionBtnHTML = `<button disabled type="button" class="bg-amber-900/60 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/40 font-mono"><i class="fas fa-clock animate-spin"></i> Pending (${mins}:${secs})</button>`;
         } else if (pendingUntil && now >= pendingUntil) {
           delete currentUser.pendingTasks[task.id];
           currentUser.completedTaskIds.push(task.id);
@@ -481,7 +506,7 @@
           initDashboard();
           return;
         } else {
-          actionBtnHTML = `<button onclick="performTask(${task.id}, '${task.link}')" class="accent-btn px-3 py-1.5 rounded-lg text-xs font-bold shadow">Perform Task</button>`;
+          actionBtnHTML = `<button type="button" onclick="performTask(${task.id}, '${task.link}')" class="accent-btn px-3 py-1.5 rounded-lg text-xs font-bold shadow">Perform Task</button>`;
         }
 
         taskCard.innerHTML = `
@@ -618,7 +643,7 @@
               <div class="text-amber-400">Request: <strong>${req.tier} Plan (₦${req.price})</strong></div>
               <div class="text-gray-400 text-[10px]">Ref: ${req.reference} | ${req.date}</div>
             </div>
-            <button onclick="approveTierUpgrade(${req.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded font-bold">
+            <button type="button" onclick="approveTierUpgrade(${req.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded font-bold">
               Approve
             </button>
           `;
@@ -675,7 +700,7 @@
       localStorage.setItem('qt_current_user', JSON.stringify(currentUser));
     }
 
-    // Load active session
+    // Load active session on start
     if (currentUser) {
       initDashboard();
     }
