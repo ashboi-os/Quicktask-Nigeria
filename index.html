@@ -1,725 +1,578 @@
-```html
-<!DOCTYPE html>
+
+​<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickTask Nigeria</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <style>
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .bg-pattern { background-color: #0f172a; background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 16px 16px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickTask Nigeria</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+body { background-color: #0b132b; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; }
+.card-bg { background-color: #1c2541; border: 1px solid #2a385c; }
+.accent-btn { background-color: #10b981; color: #ffffff; font-weight: 600; }
+.accent-btn:hover { background-color: #059669; }
+</style>
 </head>
-<body class="bg-pattern text-slate-100 min-h-screen font-sans antialiased pb-20">
-
-    <!-- TOP HEADER -->
-    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex justify-between items-center shadow-lg">
-        <div class="flex items-center space-x-3">
-            <!-- 3-Tap Admin Icon Gesture -->
-            <div id="adminBolt" class="cursor-pointer select-none text-emerald-400 text-2xl font-black flex items-center gap-2">
-                <i class="fa-solid fa-bolt animate-pulse"></i>
-                <span class="bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">QuickTask NG</span>
-            </div>
-        </div>
-        
-        <div id="userInfoHeader" class="hidden flex items-center space-x-3">
-            <div class="text-right">
-                <p id="headerUserName" class="text-xs font-bold text-slate-200"></p>
-                <span id="headerTierBadge" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-800 text-emerald-400 border border-emerald-500/30">Free Tier</span>
-            </div>
-            <button onclick="logout()" class="text-slate-400 hover:text-rose-400 text-sm p-2"><i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
-    </header>
-
-    <!-- MAIN CONTAINER -->
-    <main class="max-w-md mx-auto p-4 space-y-6">
-
-        <!-- AUTH MODAL / CONTAINER -->
-        <div id="authSection" class="glass text-slate-800 rounded-2xl p-6 shadow-2xl border border-slate-700/20 my-8">
-            <div class="text-center mb-6">
-                <h1 class="text-2xl font-black text-slate-900">Welcome to QuickTask</h1>
-                <p class="text-xs text-slate-500 mt-1">Complete micro-tasks & earn instantly in ₦</p>
-            </div>
-
-            <!-- LOGIN FORM -->
-            <form id="loginForm" class="space-y-4" onsubmit="handleLogin(event)">
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Email Address</label>
-                    <input type="email" id="loginEmail" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Password</label>
-                    <input type="password" id="loginPassword" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="switchAuthMode('forgot')" class="text-xs font-bold text-emerald-600 hover:underline">Forgot Password?</button>
-                </div>
-                <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition">Login</button>
-                <p class="text-center text-xs text-slate-600">Don't have an account? <a href="#" onclick="switchAuthMode('signup')" class="text-emerald-600 font-bold underline">Sign Up</a></p>
-            </form>
-
-            <!-- SIGNUP FORM -->
-            <form id="signupForm" class="space-y-4 hidden" onsubmit="handleSignup(event)">
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Full Name</label>
-                    <input type="text" id="signupName" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Email Address</label>
-                    <input type="email" id="signupEmail" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Create Password</label>
-                    <input type="password" id="signupPassword" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition">Create Account</button>
-                <p class="text-center text-xs text-slate-600">Already have an account? <a href="#" onclick="switchAuthMode('login')" class="text-emerald-600 font-bold underline">Login</a></p>
-            </form>
-
-            <!-- FORGOT PASSWORD FORM -->
-            <form id="forgotForm" class="space-y-4 hidden" onsubmit="handleForgotPassword(event)">
-                <div class="text-slate-600 text-xs text-center mb-2">We will send a 6-digit verification OTP to your registered Gmail via EmailJS.</div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Registered Email</label>
-                    <input type="email" id="forgotEmail" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <button type="submit" id="sendOtpBtn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition">Send Verification Code</button>
-                <p class="text-center text-xs text-slate-600"><a href="#" onclick="switchAuthMode('login')" class="text-slate-500 font-bold underline">Back to Login</a></p>
-            </form>
-
-            <!-- OTP VERIFY & RESET PASSWORD FORM -->
-            <form id="otpResetForm" class="space-y-4 hidden" onsubmit="handleOtpReset(event)">
-                <div class="text-center text-xs font-bold text-emerald-600">OTP Code Sent! Check your email inbox.</div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">Enter 6-Digit OTP</label>
-                    <input type="text" id="otpCode" maxlength="6" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 text-center text-xl tracking-widest font-mono font-bold">
-                </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-700 uppercase">New Password</label>
-                    <input type="password" id="newPassword" required class="w-full mt-1 px-4 py-3 rounded-xl bg-slate-100 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
-                </div>
-                <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition">Update Password & Login</button>
-            </form>
-        </div>
-
-        <!-- APP DASHBOARD (Hidden until logged in) -->
-        <div id="appDashboard" class="space-y-6 hidden">
-            
-            <!-- WALLET & UPGRADE CARD -->
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/60 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10 text-emerald-400 text-8xl font-black select-none pointer-events-none">₦</div>
-                <div class="relative z-10">
-                    <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Available Balance</p>
-                    <h2 id="userBalance" class="text-3xl font-black text-emerald-400 mt-1">₦0.00</h2>
-                    
-                    <div class="mt-4 pt-4 border-t border-slate-700/60 flex justify-between items-center text-xs">
-                        <div>
-                            <span class="text-slate-400">Tasks Completed:</span>
-                            <span id="userTaskCount" class="font-bold text-slate-200">0 / 20</span>
-                        </div>
-                        <button onclick="openUpgradeModal()" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 rounded-lg font-bold transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-crown text-amber-400"></i> Upgrade Tier
-                        </button>
-                    </div>
-
-                    <!-- TIER PENDING NOTICE IF ANY -->
-                    <div id="tierPendingBanner" class="hidden mt-3 p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-[11px] text-amber-300 flex items-center gap-2">
-                        <i class="fa-solid fa-clock animate-spin"></i>
-                        <span>Tier upgrade pending admin payment verification.</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TASKS SECTION -->
-            <div class="space-y-3">
-                <div class="flex justify-between items-center px-1">
-                    <h3 class="text-sm font-bold uppercase text-slate-400 tracking-wider">Available Tasks</h3>
-                    <span id="taskLimitBadge" class="text-xs text-slate-400">Free Limit: 20</span>
-                </div>
-
-                <!-- TASK LIST CONTAINER -->
-                <div id="taskList" class="space-y-3">
-                    <!-- Tasks will be injected dynamically -->
-                </div>
-            </div>
-        </div>
-
-        <!-- ADMIN PANEL MODAL -->
-        <div id="adminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-5 max-h-[85vh] overflow-y-auto space-y-4 shadow-2xl">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h3 class="font-bold text-emerald-400 flex items-center gap-2"><i class="fa-solid fa-user-shield"></i> Admin Control Panel</h3>
-                    <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-                </div>
-
-                <!-- ADMIN PASSCODE FORM -->
-                <div id="adminPassSection" class="space-y-3">
-                    <p class="text-xs text-slate-400">Enter secure admin passcode to continue:</p>
-                    <input type="password" id="adminPassInput" placeholder="Enter Passcode" class="w-full px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-sm focus:outline-none focus:border-emerald-500">
-                    <button onclick="verifyAdminPass()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm">Access Dashboard</button>
-                </div>
-
-                <!-- ADMIN CONTENT (Protected) -->
-                <div id="adminContent" class="hidden space-y-5">
-                    <!-- PENDING TIER APPROVALS -->
-                    <div>
-                        <h4 class="text-xs font-bold uppercase text-slate-400 border-b border-slate-800 pb-1 mb-2">Pending Tier Upgrades</h4>
-                        <div id="adminPendingTiers" class="space-y-2 text-xs">
-                            <!-- Injected dynamically -->
-                        </div>
-                    </div>
-
-                    <!-- ALL USERS -->
-                    <div>
-                        <h4 class="text-xs font-bold uppercase text-slate-400 border-b border-slate-800 pb-1 mb-2">Registered Users</h4>
-                        <div id="adminUserList" class="space-y-2 text-xs">
-                            <!-- Injected dynamically -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TIER UPGRADE MODAL -->
-        <div id="upgradeModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-5 max-h-[85vh] overflow-y-auto space-y-4 shadow-2xl text-slate-200">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h3 class="font-bold text-amber-400 flex items-center gap-2"><i class="fa-solid fa-crown"></i> Membership Tiers</h3>
-                    <button onclick="closeUpgradeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-                </div>
-
-                <!-- BANK DETAILS -->
-                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 text-xs space-y-1">
-                    <p class="font-bold text-emerald-400 uppercase tracking-wider text-[10px]">Payment Account Details</p>
-                    <p><span class="text-slate-400">Bank:</span> Parallex Bank</p>
-                    <p><span class="text-slate-400">Account No:</span> <strong class="text-slate-100 font-mono select-all">2003388692</strong></p>
-                    <p><span class="text-slate-400">Account Name:</span> QuickTask Services</p>
-                </div>
-
-                <!-- TIERS OPTION -->
-                <div class="space-y-3">
-                    <div class="p-3 bg-slate-800 border border-slate-700 rounded-xl flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-amber-300 text-sm">Bronze Tier</p>
-                            <p class="text-xs text-slate-400">50 Tasks / Day • ₦800</p>
-                        </div>
-                        <button onclick="selectTierUpgrade('Bronze', 800)" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">Select</button>
-                    </div>
-
-                    <div class="p-3 bg-slate-800 border border-slate-700 rounded-xl flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-slate-200 text-sm">Silver Tier</p>
-                            <p class="text-xs text-slate-400">150 Tasks / Day • ₦3,500</p>
-                        </div>
-                        <button onclick="selectTierUpgrade('Silver', 3500)" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">Select</button>
-                    </div>
-
-                    <div class="p-3 bg-slate-800 border border-slate-700 rounded-xl flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-amber-400 text-sm">Gold Tier</p>
-                            <p class="text-xs text-slate-400">Unlimited Tasks • ₦7,500</p>
-                        </div>
-                        <button onclick="selectTierUpgrade('Gold', 7500)" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-bold">Select</button>
-                    </div>
-                </div>
-
-                <!-- CONFIRM PAYMENT / RECEIPT FORM -->
-                <div id="paymentProofForm" class="hidden border-t border-slate-800 pt-3 space-y-3">
-                    <p class="text-xs text-amber-300 font-semibold" id="selectedTierLabel"></p>
-                    <div>
-                        <label class="text-[11px] font-bold text-slate-400 uppercase">Sender / Payer Name</label>
-                        <input type="text" id="payerName" placeholder="Name on Bank App" class="w-full mt-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <button onclick="submitUpgradeReceipt()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-lg">Submit Payment for Admin Approval</button>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- SCRIPT APPLICATION ENGINE -->
-    <script>
-        // -------------------------------------------------------------
-        // EMAILJS CONFIGURATION
-        // -------------------------------------------------------------
-        const EMAILJS_PUBLIC_KEY = "VnLgDFgP-a5hUnI6r";
-        const EMAILJS_SERVICE_ID = "service_chv20qp";
-        const EMAILJS_TEMPLATE_ID = "template_4v8vh0v";
-
-        // Initialize EmailJS
-        (function() {
-            emailjs.init(EMAILJS_PUBLIC_KEY);
-        })();
-
-        // -------------------------------------------------------------
-        // APPLICATION STATE
-        // -------------------------------------------------------------
-        let currentUser = null;
-        let generatedOtp = null;
-        let selectedTierForUpgrade = null;
-        let tapCount = 0;
-        let tapTimer = null;
-
-        // Default tasks list template
-        const SAMPLE_TASKS = [
-            { id: 1, title: "Follow QuickTask Twitter Page", reward: 150, category: "Social" },
-            { id: 2, title: "Subscribe to YouTube Channel", reward: 150, category: "YouTube" },
-            { id: 3, title: "Like & Retweet Pinned Post", reward: 150, category: "Social" },
-            { id: 4, title: "Join Telegram Announcement Channel", reward: 150, category: "Telegram" },
-            { id: 5, title: "Download Partner PWA App", reward: 200, category: "App" }
-        ];
-
-        // -------------------------------------------------------------
-        // INITIALIZATION
-        // -------------------------------------------------------------
-        window.onload = function() {
-            setupAdminGesture();
-            checkSession();
-            // Interval timer to update 3-minute pending task count-downs
-            setInterval(updatePendingTaskTimers, 1000);
-        };
-
-        function checkSession() {
-            const activeEmail = localStorage.getItem("qt_active_session");
-            if (activeEmail) {
-                const users = getUsers();
-                currentUser = users[activeEmail] || null;
-            }
-
-            if (currentUser) {
-                document.getElementById("authSection").classList.add("hidden");
-                document.getElementById("appDashboard").classList.remove("hidden");
-                document.getElementById("userInfoHeader").classList.remove("hidden");
-                document.getElementById("userInfoHeader").classList.add("flex");
-                
-                document.getElementById("headerUserName").innerText = currentUser.name;
-                document.getElementById("headerTierBadge").innerText = (currentUser.tier || "Free Tier") + " Tier";
-
-                renderDashboard();
-            } else {
-                document.getElementById("authSection").classList.remove("hidden");
-                document.getElementById("appDashboard").classList.add("hidden");
-                document.getElementById("userInfoHeader").classList.add("hidden");
-            }
-        }
-
-        function getUsers() {
-            return JSON.parse(localStorage.getItem("qt_users") || "{}");
-        }
-
-        function saveUsers(users) {
-            localStorage.setItem("qt_users", JSON.stringify(users));
-        }
-
-        // -------------------------------------------------------------
-        // AUTHENTICATION FLOWS
-        // -------------------------------------------------------------
-        function switchAuthMode(mode) {
-            document.getElementById("loginForm").classList.add("hidden");
-            document.getElementById("signupForm").classList.add("hidden");
-            document.getElementById("forgotForm").classList.add("hidden");
-            document.getElementById("otpResetForm").classList.add("hidden");
-
-            if (mode === 'login') document.getElementById("loginForm").classList.remove("hidden");
-            if (mode === 'signup') document.getElementById("signupForm").classList.remove("hidden");
-            if (mode === 'forgot') document.getElementById("forgotForm").classList.remove("hidden");
-            if (mode === 'otp') document.getElementById("otpResetForm").classList.remove("hidden");
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-            const pass = document.getElementById("loginPassword").value;
-
-            const users = getUsers();
-            if (users[email] && users[email].password === pass) {
-                localStorage.setItem("qt_active_session", email);
-                checkSession();
-            } else {
-                alert("Invalid email or password!");
-            }
-        }
-
-        function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById("signupName").value.trim();
-            const email = document.getElementById("signupEmail").value.trim().toLowerCase();
-            const pass = document.getElementById("signupPassword").value;
-
-            const users = getUsers();
-            if (users[email]) {
-                alert("An account with this email already exists!");
-                return;
-            }
-
-            users[email] = {
-                name: name,
-                email: email,
-                password: pass,
-                balance: 0,
-                tier: "Free",
-                tierApproved: true,
-                tasksCompletedCount: 0,
-                tasks: {} // id: { status: 'pending'|'approved', timestamp: ms }
-            };
-
-            saveUsers(users);
-            localStorage.setItem("qt_active_session", email);
-            checkSession();
-        }
-
-        // -------------------------------------------------------------
-        // EMAILJS OTP & FORGOT PASSWORD
-        // -------------------------------------------------------------
-        async function handleForgotPassword(e) {
-            e.preventDefault();
-            const email = document.getElementById("forgotEmail").value.trim().toLowerCase();
-            const users = getUsers();
-
-            if (!users[email]) {
-                alert("No account found with this email address!");
-                return;
-            }
-
-            const btn = document.getElementById("sendOtpBtn");
-            btn.innerText = "Sending OTP via EmailJS...";
-            btn.disabled = true;
-
-            // Generate 6-digit OTP code
-            generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-
-            try {
-                const params = {
-                    to_email: email,
-                    to_name: users[email].name,
-                    reset_code: generatedOtp
-                };
-
-                await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
-                alert("Verification code sent successfully to " + email);
-                switchAuthMode('otp');
-            } catch (err) {
-                console.error("EmailJS Error:", err);
-                alert("Failed to send verification email. Please check your network connection.");
-            } finally {
-                btn.innerText = "Send Verification Code";
-                btn.disabled = false;
-            }
-        }
-
-        function handleOtpReset(e) {
-            e.preventDefault();
-            const inputOtp = document.getElementById("otpCode").value.trim();
-            const newPass = document.getElementById("newPassword").value;
-            const email = document.getElementById("forgotEmail").value.trim().toLowerCase();
-
-            if (inputOtp !== generatedOtp) {
-                alert("Incorrect OTP verification code!");
-                return;
-            }
-
-            const users = getUsers();
-            if (users[email]) {
-                users[email].password = newPass;
-                saveUsers(users);
-                alert("Password updated successfully! Logging you in...");
-                localStorage.setItem("qt_active_session", email);
-                checkSession();
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem("qt_active_session");
-            currentUser = null;
-            checkSession();
-        }
-
-        // -------------------------------------------------------------
-        // DASHBOARD & TASK LOGIC (3-MINUTE PENDING REQUIREMENT)
-        // -------------------------------------------------------------
-        function renderDashboard() {
-            if (!currentUser) return;
-
-            // Reload user data from sync
-            const users = getUsers();
-            currentUser = users[currentUser.email];
-
-            document.getElementById("userBalance").innerText = `₦${currentUser.balance.toLocaleString()}`;
-            document.getElementById("userTaskCount").innerText = `${currentUser.tasksCompletedCount} / ${getTaskLimit(currentUser.tier)}`;
-
-            // Check if tier pending banner needed
-            if (currentUser.pendingTier) {
-                document.getElementById("tierPendingBanner").classList.remove("hidden");
-            } else {
-                document.getElementById("tierPendingBanner").classList.add("hidden");
-            }
-
-            // Render Task Items
-            const container = document.getElementById("taskList");
-            container.innerHTML = "";
-
-            const limit = getTaskLimit(currentUser.tier);
-            const isLimitReached = currentUser.tasksCompletedCount >= limit;
-
-            SAMPLE_TASKS.forEach(task => {
-                const userTask = currentUser.tasks[task.id];
-                let statusHtml = "";
-
-                if (!userTask) {
-                    // Not performed yet
-                    if (isLimitReached) {
-                        statusHtml = `<button disabled class="px-3 py-1.5 bg-slate-800 text-slate-500 rounded-lg text-xs font-bold border border-slate-700/50 cursor-not-allowed">Tier Limit Reached</button>`;
-                    } else {
-                        statusHtml = `<button onclick="performTask(${task.id})" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition shadow-md">Perform Task</button>`;
-                    }
-                } else if (userTask.status === 'pending') {
-                    // 3-Minute Pending State
-                    const remainingMs = (userTask.timestamp + (3 * 60 * 1000)) - Date.now();
-                    const secondsLeft = Math.max(0, Math.floor(remainingMs / 1000));
-                    const mins = Math.floor(secondsLeft / 60);
-                    const secs = secondsLeft % 60;
-                    const timeString = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-
-                    statusHtml = `<div class="text-right">
-                        <span class="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-bold flex items-center gap-1">
-                            <i class="fa-solid fa-hourglass-half animate-spin text-[10px]"></i> Pending (${timeString})
-                        </span>
-                    </div>`;
-                } else if (userTask.status === 'approved') {
-                    // Approved
-                    statusHtml = `<span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-lg text-xs font-bold"><i class="fa-solid fa-check"></i> Approved (+₦${task.reward})</span>`;
-                }
-
-                container.innerHTML += `
-                    <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-4 flex justify-between items-center shadow-md">
-                        <div>
-                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">${task.category}</span>
-                            <h4 class="text-xs font-bold text-slate-200 mt-0.5">${task.title}</h4>
-                            <p class="text-[11px] text-slate-400 mt-1 font-semibold">Reward: <span class="text-emerald-400">₦${task.reward}</span></p>
-                        </div>
-                        <div>${statusHtml}</div>
-                    </div>
-                `;
-            });
-        }
-
-        function getTaskLimit(tier) {
-            if (tier === "Bronze") return 50;
-            if (tier === "Silver") return 150;
-            if (tier === "Gold") return 999999;
-            return 20; // Free limit default
-        }
-
-        function performTask(taskId) {
-            const users = getUsers();
-            const user = users[currentUser.email];
-
-            const limit = getTaskLimit(user.tier);
-            if (user.tasksCompletedCount >= limit) {
-                alert("You have reached your tier task limit! Upgrade your plan to perform more tasks.");
-                return;
-            }
-
-            // Set task as pending with current timestamp
-            user.tasks[taskId] = {
-                status: 'pending',
-                timestamp: Date.now()
-            };
-
-            saveUsers(users);
-            renderDashboard();
-            alert("Task submitted! It will remain in pending state for 3 minutes before automatic approval.");
-        }
-
-        // Timer interval function to convert pending tasks to approved after 3 minutes (180s)
-        function updatePendingTaskTimers() {
-            if (!currentUser) return;
-
-            const users = getUsers();
-            let needsSave = false;
-
-            for (const email in users) {
-                const user = users[email];
-                if (!user.tasks) continue;
-
-                for (const taskId in user.tasks) {
-                    const taskState = user.tasks[taskId];
-                    if (taskState.status === 'pending') {
-                        const elapsed = Date.now() - taskState.timestamp;
-                        // 3 minutes = 180,000 ms
-                        if (elapsed >= 3 * 60 * 1000) {
-                            taskState.status = 'approved';
-                            
-                            // Find reward
-                            const taskObj = SAMPLE_TASKS.find(t => t.id == taskId);
-                            const reward = taskObj ? taskObj.reward : 150;
-
-                            user.balance += reward;
-                            user.tasksCompletedCount += 1;
-                            needsSave = true;
-                        }
-                    }
-                }
-            }
-
-            if (needsSave) {
-                saveUsers(users);
-            }
-
-            // Re-render dashboard timer text if visible
-            if (!document.getElementById("appDashboard").classList.contains("hidden")) {
-                renderDashboard();
-            }
-        }
-
-        // -------------------------------------------------------------
-        // TIER UPGRADE & PAYMENT PROOF (ADMIN CONFIRMATION REQUIRED)
-        // -------------------------------------------------------------
-        function openUpgradeModal() {
-            document.getElementById("upgradeModal").classList.remove("hidden");
-        }
-
-        function closeUpgradeModal() {
-            document.getElementById("upgradeModal").classList.add("hidden");
-            document.getElementById("paymentProofForm").classList.add("hidden");
-            selectedTierForUpgrade = null;
-        }
-
-        function selectTierUpgrade(tier, price) {
-            selectedTierForUpgrade = { tier, price };
-            document.getElementById("paymentProofForm").classList.remove("hidden");
-            document.getElementById("selectedTierLabel").innerText = `Upgrading to ${tier} Tier (₦${price.toLocaleString()})`;
-        }
-
-        function submitUpgradeReceipt() {
-            const payer = document.getElementById("payerName").value.trim();
-            if (!payer) {
-                alert("Please enter the sender's account name!");
-                return;
-            }
-
-            const users = getUsers();
-            const user = users[currentUser.email];
-
-            // Set pending upgrade details without unlocking tier benefits yet
-            user.pendingTier = {
-                tier: selectedTierForUpgrade.tier,
-                price: selectedTierForUpgrade.price,
-                payerName: payer,
-                timestamp: Date.now()
-            };
-
-            saveUsers(users);
-            closeUpgradeModal();
-            renderDashboard();
-
-            alert("Payment receipt submitted successfully! Your upgrade is currently PENDING and will be released once confirmed by the Admin.");
-        }
-
-        // -------------------------------------------------------------
-        // 3-TAP GESTURE & ADMIN PANEL ENGINE
-        // -------------------------------------------------------------
-        function setupAdminGesture() {
-            const bolt = document.getElementById("adminBolt");
-            bolt.addEventListener("click", () => {
-                tapCount++;
-                if (tapCount === 1) {
-                    tapTimer = setTimeout(() => { tapCount = 0; }, 1200);
-                } else if (tapCount === 3) {
-                    clearTimeout(tapTimer);
-                    tapCount = 0;
-                    openAdminModal();
-                }
-            });
-        }
-
-        function openAdminModal() {
-            document.getElementById("adminModal").classList.remove("hidden");
-            document.getElementById("adminPassSection").classList.remove("hidden");
-            document.getElementById("adminContent").classList.add("hidden");
-            document.getElementById("adminPassInput").value = "";
-        }
-
-        function closeAdminModal() {
-            document.getElementById("adminModal").classList.add("hidden");
-        }
-
-        function verifyAdminPass() {
-            const input = document.getElementById("adminPassInput").value;
-            if (input === "admin123") {
-                document.getElementById("adminPassSection").classList.add("hidden");
-                document.getElementById("adminContent").classList.remove("hidden");
-                renderAdminDashboard();
-            } else {
-                alert("Incorrect Admin Passcode!");
-            }
-        }
-
-        function renderAdminDashboard() {
-            const users = getUsers();
-            const pendingContainer = document.getElementById("adminPendingTiers");
-            const userContainer = document.getElementById("adminUserList");
-
-            pendingContainer.innerHTML = "";
-            userContainer.innerHTML = "";
-
-            let pendingCount = 0;
-
-            for (const email in users) {
-                const u = users[email];
-
-                // Render pending upgrades
-                if (u.pendingTier) {
-                    pendingCount++;
-                    pendingContainer.innerHTML += `
-                        <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
-                            <div>
-                                <p class="font-bold text-slate-200">${u.name} (${u.email})</p>
-                                <p class="text-slate-400">Tier: <span class="text-amber-400">${u.pendingTier.tier}</span> • ₦${u.pendingTier.price}</p>
-                                <p class="text-slate-400">Payer: <span class="text-emerald-400">${u.pendingTier.payerName}</span></p>
-                            </div>
-                            <button onclick="approveTierUpgrade('${u.email}')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold">Approve</button>
-                        </div>
-                    `;
-                }
-
-                // Render user list
-                userContainer.innerHTML += `
-                    <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-slate-200">${u.name}</p>
-                            <p class="text-[11px] text-slate-400">${u.email} • Tier: ${u.tier} • ₦${u.balance}</p>
-                        </div>
-                    </div>
-                `;
-            }
-
-            if (pendingCount === 0) {
-                pendingContainer.innerHTML = `<p class="text-slate-500 italic">No pending tier upgrades requiring confirmation.</p>`;
-            }
-        }
-
-        function approveTierUpgrade(email) {
-            const users = getUsers();
-            const u = users[email];
-
-            if (u && u.pendingTier) {
-                u.tier = u.pendingTier.tier;
-                delete u.pendingTier;
-                saveUsers(users);
-
-                alert(`Approved ${u.tier} Tier upgrade for ${u.name}!`);
-                renderAdminDashboard();
-                checkSession();
-            }
-        }
-    </script>
+<body class="min-h-screen pb-10">
+​<!-- NAVIGATION BAR -->
+<nav class="card-bg p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+<div class="flex items-center gap-2 cursor-pointer" id="logoBtn">
+<i class="fas fa-bolt text-emerald-400 text-2xl" id="adminTrigger"></i>
+<span class="font-bold text-xl tracking-wide text-white">QuickTask <span class="text-emerald-400">NG</span></span>
+</div>
+<div id="userInfo" class="hidden flex items-center gap-3">
+<div class="text-right">
+<div id="navUserName" class="text-sm font-semibold text-gray-200">User</div>
+<span id="navUserTier" class="text-xs bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Free Tier</span>
+</div>
+<button id="logoutBtn" class="text-gray-400 hover:text-white p-2">
+<i class="fas fa-sign-out-alt text-lg"></i>
+</button>
+</div>
+</nav>
+​<!-- MAIN CONTAINER -->
+<div class="max-w-md mx-auto px-4 mt-6">
+​<!-- AUTH SECTION -->
+<div id="authSection" class="card-bg p-6 rounded-2xl shadow-xl">
+<h2 id="authTitle" class="text-2xl font-bold mb-4 text-center text-emerald-400">Welcome to QuickTask</h2>
+​<!-- LOGIN FORM -->
+<form id="loginForm" class="space-y-4">
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
+<input type="email" id="loginEmail" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
+<input type="password" id="loginPassword" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<button type="submit" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Login</button>
+<div class="flex justify-between text-xs text-emerald-400 pt-2">
+<button type="button" id="toRegister">Create Account</button>
+<button type="button" id="toForgot">Forgot Password?</button>
+</div>
+</form>
+​<!-- REGISTER FORM -->
+<form id="registerForm" class="space-y-4 hidden">
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Full Name</label>
+<input type="text" id="regName" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
+<input type="email" id="regEmail" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
+<input type="password" id="regPassword" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<button type="submit" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Register</button>
+<div class="text-center text-xs text-emerald-400 pt-2">
+<button type="button" id="toLogin">Already have an account? Login</button>
+</div>
+</form>
+​<!-- FORGOT PASSWORD FORM -->
+<form id="forgotForm" class="space-y-4 hidden">
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Your Registered Email</label>
+<input type="email" id="forgotEmail" required class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<button type="submit" id="sendOtpBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Send OTP via Email</button>
+​<div id="otpVerifySection" class="hidden space-y-3 pt-3 border-t border-slate-700">
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Enter OTP Code</label>
+<input type="text" id="otpInput" maxlength="6" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1 text-center tracking-widest text-lg">
+</div>
+<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">New Password</label>
+<input type="password" id="newPassword" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+</div>
+<button type="button" id="resetPasswordBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg text-center font-bold text-white">Reset Password</button>
+</div>
+​<div class="text-center text-xs text-emerald-400 pt-2">
+<button type="button" id="backToLoginFromForgot">Back to Login</button>
+</div>
+</form>
+</div>
+​<!-- DASHBOARD SECTION -->
+<div id="dashboardSection" class="hidden space-y-6">
+<!-- BALANCE CARD -->
+<div class="card-bg p-6 rounded-2xl shadow-xl relative overflow-hidden">
+<div class="text-xs font-semibold text-gray-400 tracking-wider">AVAILABLE BALANCE</div>
+<div class="text-4xl font-black text-emerald-400 mt-1">₦<span id="userBalance">0</span></div>
+<div class="mt-4 flex justify-between items-center text-xs text-gray-300">
+<span>Tasks Completed: <strong id="completedCount" class="text-white">0</strong> / <span id="maxTasks">20</span></span>
+<button id="openUpgradeModal" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 shadow">
+<i class="fas fa-crown"></i> Upgrade Tier
+</button>
+</div>
+</div>
+​<!-- TIER PENDING ALERT -->
+<div id="pendingTierBanner" class="hidden bg-amber-900/40 border border-amber-500/50 p-4 rounded-xl text-xs text-amber-200 flex items-center gap-3">
+<i class="fas fa-hourglass-half text-amber-400 text-xl"></i>
+<div>
+<strong class="font-bold text-amber-300">Upgrade Pending Confirmation:</strong>
+<p id="pendingTierDetails">Your payment proof has been submitted. Awaiting admin manual verification before releasing tier features.</p>
+</div>
+</div>
+​<!-- AVAILABLE TASKS LIST -->
+<div>
+<div class="flex justify-between items-center mb-3">
+<h3 class="font-bold text-lg text-white">AVAILABLE TASKS</h3>
+<span class="text-xs text-gray-400">Free Limit: <span id="freeLimitTag">20</span></span>
+</div>
+<div id="tasksList" class="space-y-3">
+<!-- Tasks dynamically rendered -->
+</div>
+</div>
+</div>
+​<!-- ADMIN PANEL SECTION -->
+<div id="adminSection" class="hidden card-bg p-6 rounded-2xl shadow-xl space-y-6">
+<div class="flex justify-between items-center border-b border-slate-700 pb-3">
+<h2 class="text-xl font-bold text-amber-400 flex items-center gap-2">
+<i class="fas fa-user-shield"></i> Admin Control Panel
+</h2>
+<button id="closeAdminBtn" class="text-gray-400 hover:text-white text-sm">Exit Admin</button>
+</div>
+​<!-- PENDING TIER APPROVALS -->
+<div>
+<h3 class="text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">Pending Tier Approvals</h3>
+<div id="adminPendingTiers" class="space-y-2">
+<!-- Admin pending items rendered here -->
+</div>
+</div>
+​<!-- USER LIST & STATS -->
+<div>
+<h3 class="text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">Registered Accounts</h3>
+<div id="adminUserList" class="space-y-2 max-h-60 overflow-y-auto">
+<!-- Registered users rendered here -->
+</div>
+</div>
+</div>
+​</div>
+​<!-- UPGRADE MODAL -->
+<div id="upgradeModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+<div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
+<div class="flex justify-between items-center border-b border-slate-700 pb-2">
+<h3 class="text-lg font-bold text-white">Choose Membership Tier</h3>
+<button id="closeUpgradeModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+</div>
+​<!-- TIERS GRID -->
+<div class="space-y-3">
+<div class="border border-amber-600/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+<div>
+<div class="font-bold text-amber-400">Bronze Tier</div>
+<div class="text-xs text-gray-400">Unlock 50 Tasks / Day</div>
+</div>
+<button class="select-tier-btn bg-amber-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Bronze" data-price="800">
+₦800
+</button>
+</div>
+​<div class="border border-slate-500/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+<div>
+<div class="font-bold text-slate-200">Silver Tier</div>
+<div class="text-xs text-gray-400">Unlock 150 Tasks / Day</div>
+</div>
+<button class="select-tier-btn bg-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Silver" data-price="3500">
+₦3,500
+</button>
+</div>
+​<div class="border border-yellow-500/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+<div>
+<div class="font-bold text-yellow-400">Gold Tier</div>
+<div class="text-xs text-gray-400">Unlimited Tasks / Day</div>
+</div>
+<button class="select-tier-btn bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Gold" data-price="7500">
+₦7,500
+</button>
+</div>
+</div>
+​<!-- PAYMENT FORM -->
+<div id="paymentDetails" class="hidden border-t border-slate-700 pt-4 space-y-3">
+<div class="bg-slate-900 p-3 rounded-lg text-xs space-y-1">
+<div class="text-gray-400">Transfer Payment To:</div>
+<div class="font-bold text-emerald-400 text-sm">Parallex Bank</div>
+<div class="text-white">Account Number: <strong class="text-emerald-300">2003388692</strong></div>
+<div class="text-gray-400 text-[10px]">Selected Plan: <span id="selectedTierName" class="text-amber-400 font-bold"></span> (₦<span id="selectedTierPrice"></span>)</div>
+</div>
+​<div>
+<label class="text-xs font-semibold text-gray-400 uppercase">Sender Name / Reference</label>
+<input type="text" id="paymentRef" placeholder="e.g. John Doe - Transfer" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs mt-1">
+</div>
+​<button id="submitUpgradePayment" class="w-full accent-btn py-2.5 rounded-lg text-center text-xs font-bold">
+Submit Payment for Verification
+</button>
+</div>
+</div>
+</div>
+​<script>
+// Initialize EmailJS with User Public Key
+emailjs.init("VnLgDFgP-a5hUnI6r");
+​const EMAILJS_SERVICE_ID = "service_chv20qp";
+const EMAILJS_TEMPLATE_ID = "template_4v8vh0v";
+​// App State Management
+let users = JSON.parse(localStorage.getItem('qt_users')) || [];
+let pendingUpgrades = JSON.parse(localStorage.getItem('qt_pending_upgrades')) || [];
+let currentUser = JSON.parse(localStorage.getItem('qt_current_user')) || null;
+let generatedOtp = null;
+let otpTargetEmail = null;
+let tapCount = 0;
+let tapTimer = null;
+​// Default Tasks Data
+const defaultTasks = [
+{ id: 1, type: "SOCIAL", title: "Follow QuickTask Twitter Page", reward: 150, link: "https://twitter.com" },
+{ id: 2, type: "YOUTUBE", title: "Subscribe to YouTube Channel", reward: 150, link: "https://youtube.com" },
+{ id: 3, type: "SOCIAL", title: "Like & Retweet Pinned Post", reward: 150, link: "https://twitter.com" },
+{ id: 4, type: "TELEGRAM", title: "Join Telegram Announcement Channel", reward: 150, link: "https://telegram.org" },
+{ id: 5, type: "APP", title: "Download & Rate QuickTask App", reward: 200, link: "#" }
+];
+​// DOM Elements
+const authSection = document.getElementById('authSection');
+const dashboardSection = document.getElementById('dashboardSection');
+const adminSection = document.getElementById('adminSection');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const forgotForm = document.getElementById('forgotForm');
+const authTitle = document.getElementById('authTitle');
+const userInfo = document.getElementById('userInfo');
+​// Triple Tap Secret Admin Trigger
+document.getElementById('adminTrigger').addEventListener('click', () => {
+tapCount++;
+clearTimeout(tapTimer);
+if (tapCount === 3) {
+tapCount = 0;
+const code = prompt("Enter Secret Admin Passcode:");
+if (code === "admin123") {
+openAdminPanel();
+} else if (code !== null) {
+alert("Incorrect passcode!");
+}
+}
+tapTimer = setTimeout(() => { tapCount = 0; }, 1000);
+});
+​// Navigation Switches
+document.getElementById('toRegister').addEventListener('click', () => {
+loginForm.classList.add('hidden');
+forgotForm.classList.add('hidden');
+registerForm.classList.remove('hidden');
+authTitle.innerText = "Create Your Account";
+});
+​document.getElementById('toLogin').addEventListener('click', showLoginForm);
+document.getElementById('backToLoginFromForgot').addEventListener('click', showLoginForm);
+​document.getElementById('toForgot').addEventListener('click', () => {
+loginForm.classList.add('hidden');
+registerForm.classList.add('hidden');
+forgotForm.classList.remove('hidden');
+authTitle.innerText = "Reset Password";
+});
+​function showLoginForm() {
+registerForm.classList.add('hidden');
+forgotForm.classList.add('hidden');
+loginForm.classList.remove('hidden');
+authTitle.innerText = "Welcome to QuickTask";
+}
+​// User Registration
+registerForm.addEventListener('submit', (e) => {
+e.preventDefault();
+const name = document.getElementById('regName').value.trim();
+const email = document.getElementById('regEmail').value.trim().toLowerCase();
+const password = document.getElementById('regPassword').value;
+​if (users.find(u => u.email === email)) {
+alert("An account with this email already exists.");
+return;
+}
+​const newUser = {
+id: Date.now(),
+name,
+email,
+password,
+balance: 0,
+tier: 'Free Tier',
+pendingTier: null,
+completedTaskIds: [],
+pendingTasks: {} // taskId -> targetTimestamp (3 mins countdown)
+};
+​users.push(newUser);
+saveUsers();
+currentUser = newUser;
+saveCurrentUser();
+initDashboard();
+});
+​// User Login
+loginForm.addEventListener('submit', (e) => {
+e.preventDefault();
+const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+const password = document.getElementById('loginPassword').value;
+​const user = users.find(u => u.email === email && u.password === password);
+if (user) {
+currentUser = user;
+saveCurrentUser();
+initDashboard();
+} else {
+alert("Invalid email or password.");
+}
+});
+​// Logout
+document.getElementById('logoutBtn').addEventListener('click', () => {
+currentUser = null;
+localStorage.removeItem('qt_current_user');
+dashboardSection.classList.add('hidden');
+adminSection.classList.add('hidden');
+userInfo.classList.add('hidden');
+authSection.classList.remove('hidden');
+showLoginForm();
+});
+​// Send OTP via EmailJS
+document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+const user = users.find(u => u.email === email);
+​if (!user) {
+alert("No account found with this email.");
+return;
+}
+​generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+otpTargetEmail = email;
+​const sendBtn = document.getElementById('sendOtpBtn');
+sendBtn.innerText = "Sending Email...";
+sendBtn.disabled = true;
+​try {
+await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+to_email: email,
+to_name: user.name,
+reset_code: generatedOtp
+});
+alert("Verification OTP sent to your email!");
+document.getElementById('otpVerifySection').classList.remove('hidden');
+sendBtn.innerText = "Resend OTP";
+} catch (err) {
+console.error("EmailJS Error:", err);
+alert("Failed to send OTP email. Please verify your internet connection.");
+sendBtn.innerText = "Send OTP via Email";
+} finally {
+sendBtn.disabled = false;
+}
+});
+​// Reset Password
+document.getElementById('resetPasswordBtn').addEventListener('click', () => {
+const inputOtp = document.getElementById('otpInput').value.trim();
+const newPass = document.getElementById('newPassword').value;
+​if (inputOtp !== generatedOtp) {
+alert("Invalid OTP code!");
+return;
+}
+if (!newPass) {
+alert("Please enter a new password.");
+return;
+}
+​const user = users.find(u => u.email === otpTargetEmail);
+if (user) {
+user.password = newPass;
+saveUsers();
+alert("Password reset successfully! Please login with your new password.");
+showLoginForm();
+}
+});
+​// Dashboard Initialization
+function initDashboard() {
+authSection.classList.add('hidden');
+adminSection.classList.add('hidden');
+dashboardSection.classList.remove('hidden');
+userInfo.classList.remove('hidden');
+​// Refresh current user from state array
+const freshUser = users.find(u => u.id === currentUser.id);
+if (freshUser) currentUser = freshUser;
+​document.getElementById('navUserName').innerText = currentUser.name;
+document.getElementById('navUserTier').innerText = currentUser.tier;
+document.getElementById('userBalance').innerText = currentUser.balance.toLocaleString();
+document.getElementById('completedCount').innerText = currentUser.completedTaskIds ? currentUser.completedTaskIds.length : 0;
+​// Pending Tier Banner
+const pendingBanner = document.getElementById('pendingTierBanner');
+if (currentUser.pendingTier) {
+pendingBanner.classList.remove('hidden');
+document.getElementById('pendingTierDetails').innerText = You submitted an upgrade request for ${currentUser.pendingTier.tier} Plan. Awaiting admin manual confirmation.;
+} else {
+pendingBanner.classList.add('hidden');
+}
+​renderTasks();
+}
+​// Task Rendering with 3-Minute Countdown
+function renderTasks() {
+const container = document.getElementById('tasksList');
+container.innerHTML = '';
+​if (!currentUser.pendingTasks) currentUser.pendingTasks = {};
+if (!currentUser.completedTaskIds) currentUser.completedTaskIds = [];
+​defaultTasks.forEach(task => {
+const isCompleted = currentUser.completedTaskIds.includes(task.id);
+const pendingUntil = currentUser.pendingTasks[task.id];
+const now = Date.now();
+​const taskCard = document.createElement('div');
+taskCard.className = "card-bg p-4 rounded-xl flex justify-between items-center";
+​let actionBtnHTML = '';
+​if (isCompleted) {
+actionBtnHTML = <span class="bg-emerald-950 text-emerald-400 text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30 flex items-center gap-1 font-semibold"><i class="fas fa-check-circle"></i> Completed</span>;
+} else if (pendingUntil && now < pendingUntil) {
+const secondsRemaining = Math.ceil((pendingUntil - now) / 1000);
+const mins = Math.floor(secondsRemaining / 60);
+const secs = (secondsRemaining % 60).toString().padStart(2, '0');
+actionBtnHTML = <button disabled class="bg-amber-900/60 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/40 font-mono"><i class="fas fa-clock animate-spin"></i> Pending (${mins}:${secs})</button>;
+} else if (pendingUntil && now >= pendingUntil) {
+// Timer Expired -> Credit Earnings automatically
+delete currentUser.pendingTasks[task.id];
+currentUser.completedTaskIds.push(task.id);
+currentUser.balance += task.reward;
+saveUsers();
+saveCurrentUser();
+initDashboard();
+return;
+} else {
+actionBtnHTML = <button onclick="performTask(${task.id}, '${task.link}')" class="accent-btn px-3 py-1.5 rounded-lg text-xs font-bold shadow">Perform Task</button>;
+}
+​taskCard.innerHTML = <div> <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">${task.type}</div> <div class="font-bold text-sm text-white">${task.title}</div> <div class="text-xs text-gray-400">Reward: <strong class="text-emerald-400">₦${task.reward}</strong></div> </div> <div>${actionBtnHTML}</div>;
+​container.appendChild(taskCard);
+});
+}
+​// Start Task (Trigger 3-Minute Timer)
+window.performTask = function(taskId, taskUrl) {
+if (taskUrl && taskUrl !== '#') window.open(taskUrl, '_blank');
+​// Set 3 Minutes (180,000 ms) Pending State
+const completionTime = Date.now() + 180000;
+if (!currentUser.pendingTasks) currentUser.pendingTasks = {};
+currentUser.pendingTasks[taskId] = completionTime;
+​saveUsers();
+saveCurrentUser();
+initDashboard();
+};
+​// Auto-update pending task timers every second
+setInterval(() => {
+if (currentUser && dashboardSection && !dashboardSection.classList.contains('hidden')) {
+let needsRefresh = false;
+if (currentUser.pendingTasks) {
+const now = Date.now();
+Object.keys(currentUser.pendingTasks).forEach(taskId => {
+if (now >= currentUser.pendingTasks[taskId]) {
+needsRefresh = true;
+}
+});
+}
+if (needsRefresh) {
+initDashboard();
+} else {
+renderTasks();
+}
+}
+}, 1000);
+​// Upgrade Modal Logic
+let selectedUpgrade = null;
+const upgradeModal = document.getElementById('upgradeModal');
+const paymentDetails = document.getElementById('paymentDetails');
+​document.getElementById('openUpgradeModal').addEventListener('click', () => {
+upgradeModal.classList.remove('hidden');
+});
+​document.getElementById('closeUpgradeModal').addEventListener('click', () => {
+upgradeModal.classList.add('hidden');
+paymentDetails.classList.add('hidden');
+});
+​document.querySelectorAll('.select-tier-btn').forEach(btn => {
+btn.addEventListener('click', (e) => {
+const tier = e.target.getAttribute('data-tier');
+const price = e.target.getAttribute('data-price');
+selectedUpgrade = { tier, price };
+​document.getElementById('selectedTierName').innerText = tier;
+document.getElementById('selectedTierPrice').innerText = Number(price).toLocaleString();
+paymentDetails.classList.remove('hidden');
+});
+});
+​// Submit Payment Proof (Stays Pending Until Admin Confirms)
+document.getElementById('submitUpgradePayment').addEventListener('click', () => {
+const ref = document.getElementById('paymentRef').value.trim();
+if (!ref) {
+alert("Please enter your payment reference / sender name.");
+return;
+}
+​const upgradeRequest = {
+id: Date.now(),
+userId: currentUser.id,
+userName: currentUser.name,
+userEmail: currentUser.email,
+tier: selectedUpgrade.tier,
+price: selectedUpgrade.price,
+reference: ref,
+date: new Date().toLocaleString()
+};
+​pendingUpgrades.push(upgradeRequest);
+localStorage.setItem('qt_pending_upgrades', JSON.stringify(pendingUpgrades));
+​currentUser.pendingTier = upgradeRequest;
+saveUsers();
+saveCurrentUser();
+​alert("Payment proof submitted! Your upgrade is now pending admin manual confirmation.");
+upgradeModal.classList.add('hidden');
+paymentDetails.classList.add('hidden');
+initDashboard();
+});
+​// Admin Panel Logic
+function openAdminPanel() {
+dashboardSection.classList.add('hidden');
+authSection.classList.add('hidden');
+adminSection.classList.remove('hidden');
+renderAdminView();
+}
+​document.getElementById('closeAdminBtn').addEventListener('click', () => {
+adminSection.classList.add('hidden');
+if (currentUser) initDashboard();
+else showLoginForm();
+});
+​function renderAdminView() {
+// Render Pending Tier Requests
+const tierContainer = document.getElementById('adminPendingTiers');
+tierContainer.innerHTML = '';
+​if (pendingUpgrades.length === 0) {
+tierContainer.innerHTML = <div class="text-xs text-gray-500 italic">No pending tier requests.</div>;
+} else {
+pendingUpgrades.forEach((req, index) => {
+const card = document.createElement('div');
+card.className = "bg-slate-800 p-3 rounded-lg flex justify-between items-center text-xs";
+card.innerHTML = <div> <div class="font-bold text-white">${req.userName} (${req.userEmail})</div> <div class="text-amber-400">Request: <strong>${req.tier} Plan (₦${req.price})</strong></div> <div class="text-gray-400 text-[10px]">Ref: ${req.reference} | ${req.date}</div> </div> <button onclick="approveTierUpgrade(${req.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded font-bold"> Approve </button>;
+tierContainer.appendChild(card);
+});
+}
+​// Render Users
+const userContainer = document.getElementById('adminUserList');
+userContainer.innerHTML = '';
+​users.forEach(u => {
+const item = document.createElement('div');
+item.className = "bg-slate-800/60 p-2.5 rounded-lg text-xs flex justify-between items-center border border-slate-700";
+item.innerHTML = <div> <div class="font-bold text-slate-200">${u.name} <span class="text-[10px] text-emerald-400">(${u.tier})</span></div> <div class="text-gray-400 text-[10px]">${u.email}</div> </div> <div class="text-right"> <div class="font-bold text-emerald-400">₦${u.balance}</div> </div>;
+userContainer.appendChild(item);
+});
+}
+​// Admin Manual Approval
+window.approveTierUpgrade = function(requestId) {
+const index = pendingUpgrades.findIndex(r => r.id === requestId);
+if (index === -1) return;
+​const req = pendingUpgrades[index];
+const targetUser = users.find(u => u.id === req.userId);
+​if (targetUser) {
+targetUser.tier = req.tier + " Tier";
+targetUser.pendingTier = null;
+saveUsers();
+}
+​pendingUpgrades.splice(index, 1);
+localStorage.setItem('qt_pending_upgrades', JSON.stringify(pendingUpgrades));
+​alert(Approved ${req.tier} upgrade for ${req.userName}!);
+renderAdminView();
+};
+​// Data Storage Helpers
+function saveUsers() {
+localStorage.setItem('qt_users', JSON.stringify(users));
+}
+​function saveCurrentUser() {
+localStorage.setItem('qt_current_user', JSON.stringify(currentUser));
+}
+​// Initialize session on load
+if (currentUser) {
+initDashboard();
+}
+</script>
 </body>
 </html>
-```
