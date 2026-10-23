@@ -206,7 +206,7 @@
           <h3 class="font-bold text-sm text-white"><i class="fas fa-users text-emerald-400"></i> Refer & Earn ($0.50 / Ref)</h3>
           <p class="text-xs text-gray-400">Share your referral link with friends. Earn $0.50 instantly when they join!</p>
           <div class="flex gap-2">
-            <input type="text" id="referralLinkInput" readonly class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white" value="https://taskglobal.app/register?ref=">
+            <input type="text" id="referralLinkInput" readonly class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white" value="https://task-nigeria.vercel.app/?ref=">
             <button type="button" id="copyRefBtn" class="accent-btn px-3 py-2 rounded-lg text-xs font-bold">Copy</button>
           </div>
           <div class="text-xs text-gray-400 pt-1">Total Referrals: <strong id="referralCount" class="text-white">0</strong></div>
@@ -779,7 +779,7 @@
       document.getElementById('profilePhone').innerText = currentUser.phone;
       document.getElementById('profileTier').innerText = currentUser.tier;
       document.getElementById('referralCount').innerText = currentUser.referralCount || 0;
-      document.getElementById('referralLinkInput').value = `https://taskglobal.app/register?ref=${currentUser.id}`;
+      document.getElementById('referralLinkInput').value = `https://task-nigeria.vercel.app/?ref=${currentUser.id}`;
       if (currentUser.savedUsdtAddress) {
         document.getElementById('settingUsdtAddress').value = currentUser.savedUsdtAddress;
       }
