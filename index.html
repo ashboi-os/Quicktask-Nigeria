@@ -1,497 +1,820 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickTask Nigeria - Micro-Tasking Marketplace</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskGlobal - Global Micro-Job Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #0b132b; color: #ffffff; font-family: system-ui, -apple-system, sans-serif; }
+    .card-bg { background-color: #1c2541; border: 1px solid #2a385c; }
+    .accent-btn { background-color: #10b981; color: #ffffff; font-weight: 600; }
+    .accent-btn:hover { background-color: #059669; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased font-sans min-h-screen pb-20" x-data="taskApp()">
+<body class="min-h-screen pb-10">
 
-    <!-- AUTHENTICATION, PASSWORD RECOVERY & EMAIL VERIFICATION -->
-    <div x-show="!isLoggedIn" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900">
-        <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-            <div class="text-center mb-6">
-                <!-- SECRET ADMIN TRIGGER: Tap 3 times on the bolt icon -->
-                <button @click="adminTapCount++; if(adminTapCount >= 3) { openSecretAdmin(); adminTapCount = 0; }" class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg mx-auto mb-2 active:scale-95 transition">
-                    <i class="fa-solid fa-bolt text-2xl"></i>
-                </button>
-                <h2 class="text-2xl font-black text-gray-900">QuickTask <span class="text-indigo-600">Nigeria</span></h2>
-                <p class="text-xs text-emerald-600 font-bold mt-1">🎁 Get ₦1,500 Welcome Bonus Instantly!</p>
-            </div>
-
-            <!-- REGISTRATION / LOGIN / FORGOT PASSWORD MODES -->
-            <template x-if="!pendingVerification && !isForgotPass">
-                <div>
-                    <div class="flex border-b border-gray-200 mb-5 text-xs font-bold text-center">
-                        <button @click="authMode = 'login'" :class="authMode === 'login' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-400'" class="w-1/2 pb-2 transition">Log In</button>
-                        <button @click="authMode = 'signup'" :class="authMode === 'signup' ? 'border-b-2 border-indigo-600 text-indigo-600' : 'text-gray-400'" class="w-1/2 pb-2 transition">Create Account</button>
-                    </div>
-
-                    <!-- LOGIN FORM -->
-                    <form x-show="authMode === 'login'" @submit.prevent="handleLogin()" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
-                            <input type="email" x-model="authEmail" required placeholder="worker@gmail.com" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-xs font-semibold text-gray-700">Password</label>
-                                <button type="button" @click="isForgotPass = true" class="text-[11px] text-indigo-600 font-bold hover:underline">Forgot Password?</button>
-                            </div>
-                            <input type="password" x-model="authPassword" required placeholder="••••••••" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-lg shadow transition flex items-center justify-center space-x-1">
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                            <span>Log In to Account</span>
-                        </button>
-                    </form>
-
-                    <!-- SIGN UP FORM -->
-                    <form x-show="authMode === 'signup'" @submit.prevent="initiateSignUp()" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Full Name</label>
-                            <input type="text" x-model="authName" required placeholder="e.g. Dubem Chidu" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
-                            <input type="email" x-model="authEmail" required placeholder="worker@gmail.com" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
-                            <input type="password" x-model="authPassword" required placeholder="••••••••" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <button type="submit" :disabled="isSendingCode" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg shadow transition flex items-center justify-center space-x-1">
-                            <i class="fa-solid opacity-75" :class="isSendingCode ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
-                            <span x-text="isSendingCode ? 'Sending Code to Gmail...' : 'Send Verification Code to Gmail'"></span>
-                        </button>
-                    </form>
-                </div>
-            </template>
-
-            <!-- FORGOT / RECOVER PASSWORD FORM -->
-            <template x-if="isForgotPass && !resetStep">
-                <div class="space-y-4">
-                    <div class="text-center">
-                        <h3 class="font-bold text-gray-900 text-base">Recover Your Account</h3>
-                        <p class="text-xs text-gray-500 mt-1">Enter your registered Gmail address to receive a 4-digit recovery code.</p>
-                    </div>
-
-                    <form @submit.prevent="sendPasswordResetCode()" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Registered Gmail</label>
-                            <input type="email" x-model="resetEmail" required placeholder="worker@gmail.com" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <button type="submit" :disabled="isSendingCode" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-lg shadow transition flex items-center justify-center space-x-1">
-                            <i class="fa-solid opacity-75" :class="isSendingCode ? 'fa-spinner fa-spin' : 'fa-envelope'"></i>
-                            <span x-text="isSendingCode ? 'Sending Code...' : 'Send Password Reset Code'"></span>
-                        </button>
-                        <button type="button" @click="isForgotPass = false" class="text-xs text-gray-400 hover:underline block mx-auto text-center">Back to Login</button>
-                    </form>
-                </div>
-            </template>
-
-            <!-- ENTER RESET CODE & NEW PASSWORD -->
-            <template x-if="isForgotPass && resetStep === 2">
-                <div class="space-y-4">
-                    <div class="text-center">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-lg mb-2">
-                            <i class="fa-solid fa-key"></i>
-                        </div>
-                        <h3 class="font-bold text-gray-900 text-base">Reset Your Password</h3>
-                        <p class="text-xs text-gray-500">We sent a 4-digit code to <span class="font-bold text-indigo-600" x-text="resetEmail"></span>.</p>
-                    </div>
-
-                    <form @submit.prevent="confirmPasswordReset()" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">4-Digit Reset Code</label>
-                            <input type="text" x-model="resetCodeInput" maxlength="4" required placeholder="Enter code" class="w-full text-center text-lg font-bold tracking-widest px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">New Password</label>
-                            <input type="password" x-model="newPassword" required placeholder="New password" class="w-full text-xs px-3.5 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-lg shadow transition">
-                            Update Password & Log In
-                        </button>
-                    </form>
-                </div>
-            </template>
-
-            <!-- EMAIL VERIFICATION CODE ENTRY -->
-            <template x-if="pendingVerification">
-                <div class="text-center space-y-4">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                        <i class="fa-solid fa-envelope-circle-check"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-900 text-base">Check Your Gmail Inbox</h3>
-                    <p class="text-xs text-gray-500">We sent a 4-digit verification code to <span class="font-bold text-indigo-600" x-text="authEmail"></span>.</p>
-                    
-                    <input type="text" x-model="verificationCodeInput" maxlength="4" placeholder="Enter code" class="w-40 text-center text-lg font-bold tracking-widest px-3 py-2 border border-gray-300 rounded-lg mx-auto block focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                    
-                    <button @click="verifyEmailCode()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-lg shadow transition">
-                        Verify & Claim ₦1,500 Bonus
-                    </button>
-                    <button @click="pendingVerification = false" class="text-xs text-gray-400 hover:underline block mx-auto">Change Email</button>
-                </div>
-            </template>
+  <!-- NAVIGATION BAR -->
+  <nav class="card-bg p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+    <div class="flex items-center gap-2 cursor-pointer" id="logoBtn">
+      <i class="fas fa-bolt text-emerald-400 text-2xl" id="adminTrigger"></i>
+      <span class="font-bold text-xl tracking-wide text-white">TaskGlobal <span class="text-emerald-400">USD</span></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button id="rulesNavBtn" type="button" class="text-xs text-gray-300 hover:text-emerald-400 flex items-center gap-1 bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700">
+        <i class="fas fa-scroll text-emerald-400"></i> Rules
+      </button>
+      <div id="userInfo" class="hidden flex items-center gap-3">
+        <div class="text-right">
+          <div id="navUserName" class="text-sm font-semibold text-gray-200">User</div>
+          <span id="navUserTier" class="text-xs bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">Starter Tier</span>
         </div>
+        <button id="logoutBtn" type="button" class="text-gray-400 hover:text-white p-2">
+          <i class="fas fa-sign-out-alt text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTAINER -->
+  <div class="max-w-md mx-auto px-4 mt-6">
+
+    <!-- AUTH SECTION -->
+    <div id="authSection" class="card-bg p-6 rounded-2xl shadow-xl">
+      <h2 id="authTitle" class="text-2xl font-bold mb-4 text-center text-emerald-400">Welcome to TaskGlobal</h2>
+      
+      <!-- LOGIN BOX -->
+      <div id="loginBox" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="user@gmail.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <button type="button" id="loginSubmitBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Login</button>
+        <div class="flex justify-between text-xs text-emerald-400 pt-2">
+          <button type="button" id="toRegister">Create Account</button>
+          <button type="button" id="toForgot">Forgot Password?</button>
+        </div>
+      </div>
+
+      <!-- REGISTER BOX -->
+      <div id="registerBox" class="space-y-4 hidden">
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Full Name</label>
+          <input type="text" id="regName" placeholder="John Doe" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
+          <input type="email" id="regEmail" placeholder="user@gmail.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
+          <input type="password" id="regPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <button type="button" id="registerSubmitBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Register</button>
+        <div class="text-center text-xs text-emerald-400 pt-2">
+          <button type="button" id="toLogin">Already have an account? Login</button>
+        </div>
+      </div>
+
+      <!-- FORGOT PASSWORD BOX -->
+      <div id="forgotBox" class="space-y-4 hidden">
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Your Registered Email</label>
+          <input type="email" id="forgotEmail" placeholder="user@gmail.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <button type="button" id="sendOtpBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Send OTP via Email</button>
+        
+        <div id="otpVerifySection" class="hidden space-y-3 pt-3 border-t border-slate-700">
+          <div>
+            <label class="text-xs font-semibold text-gray-400 uppercase">Enter OTP Code</label>
+            <input type="text" id="otpInput" maxlength="6" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1 text-center tracking-widest text-lg">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-400 uppercase">New Password</label>
+            <input type="password" id="newPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+          </div>
+          <button type="button" id="resetPasswordBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg text-center font-bold text-white">Reset Password</button>
+        </div>
+
+        <div class="text-center text-xs text-emerald-400 pt-2">
+          <button type="button" id="backToLoginFromForgot">Back to Login</button>
+        </div>
+      </div>
     </div>
 
-    <!-- MAIN APP DASHBOARD -->
-    <div x-show="isLoggedIn" x-cloak>
-        <!-- TOP HEADER -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
-            <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <button @click="adminTapCount++; if(adminTapCount >= 3) { openSecretAdmin(); adminTapCount = 0; }" class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md active:scale-95 transition">
-                        <i class="fa-solid fa-bolt text-lg"></i>
-                    </button>
-                    <div>
-                        <h1 class="font-extrabold text-lg leading-tight text-gray-900">QuickTask</h1>
-                        <div class="flex items-center space-x-1">
-                            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider">Nigeria</span>
-                            <span class="text-[10px] text-gray-400 font-semibold truncate max-w-[90px]" x-text="currentUser.name"></span>
-                        </div>
-                    </div>
-                </div>
+    <!-- DASHBOARD SECTION -->
+    <div id="dashboardSection" class="hidden space-y-6">
+      <!-- BALANCE CARD -->
+      <div class="card-bg p-6 rounded-2xl shadow-xl relative overflow-hidden">
+        <div class="text-xs font-semibold text-gray-400 tracking-wider">AVAILABLE BALANCE</div>
+        <div class="text-4xl font-black text-emerald-400 mt-1">$<span id="userBalance">0.00</span> <span class="text-xs font-normal text-gray-400">USDT</span></div>
+        <div class="mt-4 flex justify-between items-center text-xs text-gray-300">
+          <span>Tasks Completed: <strong id="completedCount" class="text-white">0</strong></span>
+          <div class="flex gap-2">
+            <button type="button" id="openWithdrawModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow">
+              <i class="fas fa-wallet"></i> Withdraw
+            </button>
+            <button type="button" id="openUpgradeModal" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 shadow">
+              <i class="fas fa-crown"></i> Upgrade
+            </button>
+          </div>
+        </div>
+      </div>
 
-                <div class="flex items-center space-x-2">
-                    <button @click="showWithdrawModal = true" class="bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-xl px-3 py-1 text-right shadow-inner transition">
-                        <div class="text-xs font-extrabold text-emerald-700 flex items-center justify-end space-x-0.5">
-                            <span>₦</span><span x-text="wallet.balance.toLocaleString()"></span>
-                        </div>
-                        <div class="text-[9px] text-indigo-600 font-semibold">
-                            <i class="fa-solid fa-wallet"></i> Withdraw
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </header>
+      <!-- TIER PENDING ALERT -->
+      <div id="pendingTierBanner" class="hidden bg-amber-900/40 border border-amber-500/50 p-4 rounded-xl text-xs text-amber-200 flex items-center gap-3">
+        <i class="fas fa-hourglass-half text-amber-400 text-xl"></i>
+        <div>
+          <strong class="font-bold text-amber-300">Upgrade Request Pending Verification:</strong>
+          <p id="pendingTierDetails">Your crypto transaction hash proof has been received. Awaiting admin manual verification before releasing tier benefits.</p>
+        </div>
+      </div>
 
-        <!-- HOME TAB -->
-        <main class="max-w-md mx-auto px-4 pt-4" x-show="currentNav === 'home'">
-            <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl p-5 text-white shadow-lg relative overflow-hidden mb-4">
-                <div class="relative z-10">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs text-indigo-200 font-semibold">Tier: <strong class="text-amber-300 uppercase" x-text="currentUser.tier || 'Free Tier'"></strong></span>
-                        <span class="text-[10px] bg-white/25 px-2 py-0.5 rounded-full backdrop-blur-sm">Payout: 20th Monthly</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm border border-white/10">
-                            <span class="text-[10px] text-indigo-200 block">Total Balance</span>
-                            <span class="text-base font-extrabold">₦<span x-text="wallet.balance.toLocaleString()"></span></span>
-                        </div>
-                        <div class="bg-white/10 p-2.5 rounded-xl backdrop-blur-sm border border-white/10">
-                            <span class="text-[10px] text-indigo-200 block">Daily Limit</span>
-                            <span class="text-base font-extrabold"><span x-text="todayTaskCount"></span> / <span x-text="dailyLimit === 999 ? '∞' : dailyLimit"></span> Done</span>
-                        </div>
-                    </div>
-
-                    <div class="flex space-x-2">
-                        <button @click="showUpgradeModal = true" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-2 rounded-lg transition shadow-sm flex items-center justify-center space-x-1">
-                            <i class="fa-solid fa-crown"></i>
-                            <span>Upgrade Tier</span>
-                        </button>
-                        <button @click="showReferralModal = true" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center space-x-1">
-                            <i class="fa-solid fa-users"></i>
-                            <span>Refer & Earn</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <button @click="currentNav = 'earn'" class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-left hover:border-indigo-500 transition">
-                    <i class="fa-solid fa-briefcase text-indigo-600 text-xl mb-1"></i>
-                    <h4 class="font-bold text-xs text-gray-900">Available Tasks</h4>
-                    <p class="text-[10px] text-gray-400">Earn ₦200 per completed job</p>
-                </button>
-                <button @click="showWithdrawModal = true" class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-left hover:border-emerald-500 transition">
-                    <i class="fa-solid fa-building-columns text-emerald-600 text-xl mb-1"></i>
-                    <h4 class="font-bold text-xs text-gray-900">Bank Withdrawal</h4>
-                    <p class="text-[10px] text-gray-400">Min ₦7,000 threshold</p>
-                </button>
-            </div>
-        </main>
-
-        <!-- EARN TAB -->
-        <main class="max-w-md mx-auto px-4 pt-4" x-show="currentNav === 'earn'">
-            <template x-if="todayTaskCount >= dailyLimit">
-                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-3 flex items-center space-x-2 text-xs text-amber-800">
-                    <i class="fa-solid fa-circle-info text-amber-600 text-base"></i>
-                    <div>
-                        <strong class="block font-bold">Daily Free Limit Reached!</strong>
-                        <span>Completed <span x-text="todayTaskCount"></span>/<span x-text="dailyLimit"></span> tasks today. <strong class="text-indigo-600 cursor-pointer underline" @click="showUpgradeModal = true">Upgrade tier</strong> to perform more tasks!</span>
-                    </div>
-                </div>
-            </template>
-
-            <div class="flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
-                <template x-for="cat in categories" :key="cat">
-                    <button @click="selectedCategory = cat" 
-                            :class="selectedCategory === cat ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'"
-                            class="text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap transition">
-                        <span x-text="cat"></span>
-                    </button>
-                </template>
-            </div>
-
-            <div class="space-y-3 mt-3">
-                <template x-for="task in filteredTasks" :key="task.id">
-                    <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition">
-                        <div class="flex items-start justify-between">
-                            <div>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-600" x-text="task.category"></span>
-                                <h3 class="font-bold text-sm text-gray-900 mt-2" x-text="task.title"></h3>
-                                <p class="text-xs text-gray-500 mt-1" x-text="task.description"></p>
-                            </div>
-                            <div class="text-right ml-2 flex-shrink-0">
-                                <span class="font-extrabold text-emerald-600 text-sm">₦200</span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2 mt-4">
-                            <a :href="task.link" target="_blank" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-xs py-2.5 rounded-lg transition text-center flex items-center justify-center space-x-1">
-                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                                <span>Open Task Link</span>
-                            </a>
-                            <button @click="openTaskModal(task)" :disabled="todayTaskCount >= dailyLimit" :class="todayTaskCount >= dailyLimit ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow'" class="font-semibold text-xs py-2.5 rounded-lg transition flex items-center justify-center space-x-1">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <span x-text="todayTaskCount >= dailyLimit ? 'Upgrade Required' : 'Submit Proof'"></span>
-                            </button>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </main>
-
-        <!-- PROFILE TAB -->
-        <main class="max-w-md mx-auto px-4 pt-4" x-show="currentNav === 'profile'">
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm mb-4 text-center">
-                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-2 font-black">
-                    <span x-text="currentUser.name ? currentUser.name[0].toUpperCase() : 'U'"></span>
-                </div>
-                <h3 class="font-bold text-lg text-gray-900" x-text="currentUser.name"></h3>
-                <p class="text-xs text-gray-400" x-text="currentUser.email"></p>
-                <span class="inline-block mt-2 text-[10px] bg-amber-100 text-amber-800 font-bold px-2.5 py-0.5 rounded-full uppercase" x-text="currentUser.tier || 'Free Tier'"></span>
-            </div>
-        </main>
-
-        <!-- SETTINGS TAB -->
-        <main class="max-w-md mx-auto px-4 pt-4" x-show="currentNav === 'settings'">
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-100">
-                <button @click="showSupportModal = true" class="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-headset text-indigo-600 text-lg"></i>
-                        <div>
-                            <h4 class="font-bold text-xs text-gray-900">Customer Support</h4>
-                            <p class="text-[10px] text-gray-400">Open ticket or ask questions</p>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
-                </button>
-
-                <button @click="handleLogout()" class="w-full p-4 flex items-center justify-between text-left hover:bg-red-50 text-red-600">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-right-from-bracket text-lg"></i>
-                        <span class="font-bold text-xs">Sign Out</span>
-                    </div>
-                </button>
-            </div>
-        </main>
-
-        <!-- FIXED BOTTOM NAVIGATION BAR -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
-            <div class="max-w-md mx-auto flex justify-around py-2">
-                <button @click="currentNav = 'home'" :class="currentNav === 'home' ? 'text-indigo-600 font-bold' : 'text-gray-400'" class="flex flex-col items-center text-[10px] space-y-0.5">
-                    <i class="fa-solid fa-house text-base"></i>
-                    <span>Home</span>
-                </button>
-                <button @click="currentNav = 'earn'" :class="currentNav === 'earn' ? 'text-indigo-600 font-bold' : 'text-gray-400'" class="flex flex-col items-center text-[10px] space-y-0.5">
-                    <i class="fa-solid fa-briefcase text-base"></i>
-                    <span>Earn</span>
-                </button>
-                <button @click="currentNav = 'profile'" :class="currentNav === 'profile' ? 'text-indigo-600 font-bold' : 'text-gray-400'" class="flex flex-col items-center text-[10px] space-y-0.5">
-                    <i class="fa-solid fa-user text-base"></i>
-                    <span>Profile</span>
-                </button>
-                <button @click="currentNav = 'settings'" :class="currentNav === 'settings' ? 'text-indigo-600 font-bold' : 'text-gray-400'" class="flex flex-col items-center text-[10px] space-y-0.5">
-                    <i class="fa-solid fa-gear text-base"></i>
-                    <span>Settings</span>
-                </button>
-            </div>
-        </nav>
+      <!-- AVAILABLE TASKS LIST -->
+      <div>
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-bold text-lg text-white">GLOBAL MICRO-TASKS</h3>
+          <span class="text-xs text-gray-400">Current Plan: <span id="currentTierTag" class="text-emerald-400 font-bold">Starter</span></span>
+        </div>
+        <div id="tasksList" class="space-y-3">
+          <!-- Dynamic Task Cards -->
+        </div>
+      </div>
     </div>
 
-    <!-- ALPINE.JS CONTROLLER SCRIPT -->
-    <script>
-        // Initialize EmailJS (Replace 'YOUR_PUBLIC_KEY' with your EmailJS key)
-        (function() {
-            emailjs.init("YOUR_PUBLIC_KEY");
-        })();
+    <!-- ADMIN PANEL SECTION -->
+    <div id="adminSection" class="hidden card-bg p-6 rounded-2xl shadow-xl space-y-6">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h2 class="text-xl font-bold text-amber-400 flex items-center gap-2">
+          <i class="fas fa-user-shield"></i> Admin Control Panel
+        </h2>
+        <button type="button" id="closeAdminBtn" class="text-gray-400 hover:text-white text-sm">Exit Admin</button>
+      </div>
 
-        function taskApp() {
-            return {
-                currentNav: 'home',
-                isLoggedIn: JSON.parse(localStorage.getItem('qt_user')) ? true : false,
-                pendingVerification: false,
-                isForgotPass: false,
-                resetStep: null,
-                isSendingCode: false,
-                verificationCodeInput: '',
-                generatedOtp: '',
-                resetEmail: '',
-                resetCodeInput: '',
-                newPassword: '',
-                
-                authMode: 'login',
-                authName: '',
-                authEmail: '',
-                authPassword: '',
-                currentUser: JSON.parse(localStorage.getItem('qt_user')) || { name: 'User', email: '', tier: 'Free' },
+      <!-- PENDING TIER APPROVALS -->
+      <div>
+        <h3 class="text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">Pending Tier Approvals</h3>
+        <div id="adminPendingTiers" class="space-y-2">
+          <!-- Pending Upgrades -->
+        </div>
+      </div>
 
-                selectedCategory: 'All',
-                categories: ['All', 'Social Media', 'Mobile Apps', 'Reviews', 'Surveys'],
-                selectedTask: null,
-                showWithdrawModal: false,
-                showReferralModal: false,
-                showSupportModal: false,
-                showUpgradeModal: false,
-                showAdminModal: false,
-                adminTapCount: 0,
-                selectedTierPayment: null,
-                
-                wallet: JSON.parse(localStorage.getItem('qt_wallet')) || { balance: 1500 },
-                submissions: JSON.parse(localStorage.getItem('qt_submissions')) || [],
+      <!-- REGISTERED ACCOUNTS DATABASE -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Registered Accounts (<span id="totalUsersCount">0</span>)</h3>
+        </div>
+        <div id="adminUserList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+          <!-- Registered Users rendered here -->
+        </div>
+      </div>
+    </div>
 
-                tasks: [
-                    { id: 1, category: 'Social Media', title: 'Subscribe to Official YouTube Channel', description: 'Subscribe and enable bell notifications.', instructions: 'Subscribe to channel, upload screenshot proof.', link: 'https://youtube.com', reward: 200 },
-                    { id: 2, category: 'Mobile Apps', title: 'Download & Test FinTech App', description: 'Install from Play Store and open.', instructions: 'Install app, open once, upload screenshot proof.', link: 'https://play.google.com', reward: 200 },
-                    { id: 3, category: 'Reviews', title: 'Leave 5-Star Review on Google Maps', description: 'Write positive store review.', instructions: 'Leave 5 stars review, upload screenshot proof.', link: 'https://maps.google.com', reward: 200 }
-                ],
+  </div>
 
-                get dailyLimit() {
-                    if (this.currentUser.tier === 'Bronze') return 5;
-                    if (this.currentUser.tier === 'Silver') return 15;
-                    if (this.currentUser.tier === 'Gold') return 999;
-                    return 2;
-                },
+  <!-- UPGRADE MODAL -->
+  <div id="upgradeModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <h3 class="text-lg font-bold text-white">Select Membership Tier</h3>
+        <button type="button" id="closeUpgradeModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
 
-                get todayTaskCount() {
-                    const todayStr = new Date().toDateString();
-                    return this.submissions.filter(sub => sub.fullDate === todayStr).length;
-                },
+      <!-- TIERS GRID -->
+      <div class="space-y-3">
+        <div class="border border-slate-500/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+          <div>
+            <div class="font-bold text-slate-200">Silver Tier</div>
+            <div class="text-xs text-gray-400">30 Daily Tasks • Higher Payout Rate</div>
+          </div>
+          <button type="button" class="select-tier-btn bg-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Silver" data-price="10">
+            $10.00
+          </button>
+        </div>
 
-                get filteredTasks() {
-                    if (this.selectedCategory === 'All') return this.tasks;
-                    return this.tasks.filter(t => t.category === this.selectedCategory);
-                },
+        <div class="border border-amber-600/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+          <div>
+            <div class="font-bold text-amber-400">Pro Tier</div>
+            <div class="text-xs text-gray-400">100 Daily Tasks • Priority Verification</div>
+          </div>
+          <button type="button" class="select-tier-btn bg-amber-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Pro" data-price="20">
+            $20.00
+          </button>
+        </div>
 
-                handleLogin() {
-                    if (!this.authEmail) return;
-                    const savedUsers = JSON.parse(localStorage.getItem('qt_accounts') || '{}');
-                    
-                    if (savedUsers[this.authEmail] && savedUsers[this.authEmail].password !== this.authPassword) {
-                        alert('Incorrect password! Click "Forgot Password?" to reset.');
-                        return;
-                    }
+        <div class="border border-yellow-500/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
+          <div>
+            <div class="font-bold text-yellow-400">VIP Tier</div>
+            <div class="text-xs text-gray-400">Unlimited Tasks • Fast USDT Withdrawals</div>
+          </div>
+          <button type="button" class="select-tier-btn bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="VIP" data-price="50">
+            $50.00
+          </button>
+        </div>
+      </div>
 
-                    const userName = this.authEmail.split('@')[0];
-                    this.currentUser = { name: userName, email: this.authEmail, tier: 'Free' };
-                    localStorage.setItem('qt_user', JSON.stringify(this.currentUser));
-                    this.isLoggedIn = true;
-                },
+      <!-- PAYMENT FORM -->
+      <div id="paymentDetails" class="hidden border-t border-slate-700 pt-4 space-y-3">
+        <div class="bg-slate-900 p-3 rounded-lg text-xs space-y-1">
+          <div class="text-gray-400">Send USDT Payment (TRC-20) To:</div>
+          <div class="font-mono text-emerald-300 text-[11px] break-all bg-slate-950 p-2 rounded border border-slate-800 select-all">TXYZ9876543210TaskGlobalUSDTAddr</div>
+          <div class="text-gray-400 text-[10px] pt-1">Plan Selected: <span id="selectedTierName" class="text-amber-400 font-bold"></span> ($<span id="selectedTierPrice"></span> USDT)</div>
+        </div>
 
-                async initiateSignUp() {
-                    if (!this.authName || !this.authEmail) return;
-                    this.isSendingCode = true;
-                    this.generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-                    
-                    // Send real email via EmailJS (optional integration)
-                    try {
-                        /*
-                        await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-                            to_email: this.authEmail,
-                            to_name: this.authName,
-                            reset_code: this.generatedOtp
-                        });
-                        */
-                    } catch(e) { console.log(e); }
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Transaction Hash (TXID) / Reference</label>
+          <input type="text" id="paymentRef" placeholder="Paste TRC20 Transaction Hash / ID" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs mt-1">
+        </div>
 
-                    alert('Verification Code sent to ' + this.authEmail + '! (Your Code is: ' + this.generatedOtp + ')');
-                    this.pendingVerification = true;
-                    this.isSendingCode = false;
-                },
+        <button type="button" id="submitUpgradePayment" class="w-full accent-btn py-2.5 rounded-lg text-center text-xs font-bold">
+          Submit Payment for Verification
+        </button>
+      </div>
+    </div>
+  </div>
 
-                verifyEmailCode() {
-                    if (this.verificationCodeInput !== this.generatedOtp) {
-                        alert('Invalid verification code!');
-                        return;
-                    }
-                    this.currentUser = { name: this.authName, email: this.authEmail, tier: 'Free' };
-                    this.wallet.balance = 1500;
-                    
-                    // Save account details
-                    const savedUsers = JSON.parse(localStorage.getItem('qt_accounts') || '{}');
-                    savedUsers[this.authEmail] = { password: this.authPassword, name: this.authName };
-                    localStorage.setItem('qt_accounts', JSON.stringify(savedUsers));
+  <!-- WITHDRAW MODAL -->
+  <div id="withdrawModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <h3 class="text-lg font-bold text-white">Request USDT Withdrawal</h3>
+        <button type="button" id="closeWithdrawModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
 
-                    localStorage.setItem('qt_user', JSON.stringify(this.currentUser));
-                    localStorage.setItem('qt_wallet', JSON.stringify(this.wallet));
-                    this.isLoggedIn = true;
-                    this.pendingVerification = false;
-                    alert('Gmail verified! ₦1,500 welcome bonus credited.');
-                },
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-gray-400 uppercase font-semibold">Amount (Minimum $5.00)</label>
+          <input type="number" id="withdrawAmount" placeholder="5.00" min="5" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
+        </div>
+        <div>
+          <label class="text-gray-400 uppercase font-semibold">USDT Wallet Address (TRC-20)</label>
+          <input type="text" id="withdrawAddress" placeholder="T..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
+        </div>
+        <button type="button" id="submitWithdrawBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-center">
+          Submit Withdrawal Request
+        </button>
+      </div>
+    </div>
+  </div>
 
-                async sendPasswordResetCode() {
-                    if (!this.resetEmail) return;
-                    this.isSendingCode = true;
-                    this.generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+  <!-- RULES & REGULATIONS MODAL -->
+  <div id="rulesModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2">
+          <i class="fas fa-gavel"></i> Rules & Regulations
+        </h3>
+        <button type="button" id="closeRulesModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
 
-                    alert('Password reset code sent to ' + this.resetEmail + '! (Code: ' + this.generatedOtp + ')');
-                    this.resetStep = 2;
-                    this.isSendingCode = false;
-                },
+      <div class="text-xs text-gray-300 space-y-3 leading-relaxed">
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
+          <strong class="text-emerald-400 text-sm">1. One Account Per User</strong>
+          <p class="text-gray-400 mt-1">Multiple accounts, VPN usage, or proxy manipulation to duplicate earnings is strictly prohibited. Violators will face immediate account termination without refund.</p>
+        </div>
 
-                confirmPasswordReset() {
-                    if (this.resetCodeInput !== this.generatedOtp) {
-                        alert('Invalid reset code!');
-                        return;
-                    }
-                    
-                    // Update password
-                    const savedUsers = JSON.parse(localStorage.getItem('qt_accounts') || '{}');
-                    if (savedUsers[this.resetEmail]) {
-                        savedUsers[this.resetEmail].password = this.newPassword;
-                        localStorage.setItem('qt_accounts', JSON.stringify(savedUsers));
-                    }
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
+          <strong class="text-emerald-400 text-sm">2. 3-Minute Task Verification Window</strong>
+          <p class="text-gray-400 mt-1">When performing micro-tasks, you must stay on the target link and allow the 180-second automated timer to expire before your reward balance is credited.</p>
+        </div>
 
-                    alert('Password successfully updated! You can now log in.');
-                    this.isForgotPass = false;
-                    this.resetStep = null;
-                },
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
+          <strong class="text-emerald-400 text-sm">3. Tier Upgrades & Manual Confirmations</strong>
+          <p class="text-gray-400 mt-1">Upgrades to Silver ($10), Pro ($20), or VIP ($50) require submitting a valid crypto TXID hash. Privileges are activated upon manual admin verification.</p>
+        </div>
 
-                handleLogout() {
-                    localStorage.removeItem('qt_user');
-                    this.isLoggedIn = false;
-                },
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
+          <strong class="text-emerald-400 text-sm">4. Withdrawals</strong>
+          <p class="text-gray-400 mt-1">Withdrawals are processed in USDT (TRC-20). The minimum withdrawal threshold is $5.00.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                openSecretAdmin() {
-                    const pass = prompt('Enter Secret Admin Passcode:');
-                    if (pass === 'admin123') {
-                        alert('Welcome Admin!');
-                    } else if (pass !== null) {
-                        alert('Access Denied: Incorrect Passcode');
-                    }
-                }
-            }
+  <script>
+    // EmailJS Config
+    try {
+      emailjs.init("VnLgDFgP-a5hUnI6r");
+    } catch(err) {
+      console.log("EmailJS init:", err);
+    }
+
+    const EMAILJS_SERVICE_ID = "service_chv20qp";
+    const EMAILJS_TEMPLATE_ID = "template_4v8vh0v";
+
+    // State Management
+    let users = JSON.parse(localStorage.getItem('tg_users')) || [];
+    let pendingUpgrades = JSON.parse(localStorage.getItem('tg_pending_upgrades')) || [];
+    let currentUser = JSON.parse(localStorage.getItem('tg_current_user')) || null;
+    let generatedOtp = null;
+    let otpTargetEmail = null;
+    let tapCount = 0;
+    let tapTimer = null;
+
+    const defaultTasks = [
+      { id: 1, type: "SOCIAL", title: "Follow TaskGlobal Twitter / X", reward: 0.25, link: "https://twitter.com" },
+      { id: 2, type: "SEO TRAFFIC", title: "Visit & Read Blog Article (3 Mins)", reward: 0.35, link: "https://google.com" },
+      { id: 3, type: "YOUTUBE", title: "Watch & Like YouTube Video", reward: 0.30, link: "https://youtube.com" },
+      { id: 4, type: "DISCORD", title: "Join Global Crypto Discord Server", reward: 0.40, link: "https://discord.com" },
+      { id: 5, type: "APP TEST", title: "Test Web App Prototype & Review", reward: 0.50, link: "#" }
+    ];
+
+    // Elements
+    const authSection = document.getElementById('authSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const adminSection = document.getElementById('adminSection');
+    const loginBox = document.getElementById('loginBox');
+    const registerBox = document.getElementById('registerBox');
+    const forgotBox = document.getElementById('forgotBox');
+    const authTitle = document.getElementById('authTitle');
+    const userInfo = document.getElementById('userInfo');
+
+    // Rules Modal Handling
+    document.getElementById('rulesNavBtn').addEventListener('click', () => {
+      document.getElementById('rulesModal').classList.remove('hidden');
+    });
+    document.getElementById('closeRulesModal').addEventListener('click', () => {
+      document.getElementById('rulesModal').classList.add('hidden');
+    });
+
+    // Admin Secret Trigger (3 Taps on Logo Bolt)
+    document.getElementById('adminTrigger').addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      if (tapCount === 3) {
+        tapCount = 0;
+        const code = prompt("Enter Secret Admin Passcode:");
+        if (code === "admin123") {
+          openAdminPanel();
+        } else if (code !== null) {
+          alert("Incorrect passcode!");
         }
-    </script>
+      }
+      tapTimer = setTimeout(() => { tapCount = 0; }, 1000);
+    });
+
+    // Navigation Switches
+    document.getElementById('toRegister').addEventListener('click', () => {
+      loginBox.classList.add('hidden');
+      forgotBox.classList.add('hidden');
+      registerBox.classList.remove('hidden');
+      authTitle.innerText = "Create Your Account";
+    });
+
+    document.getElementById('toLogin').addEventListener('click', showLoginForm);
+    document.getElementById('backToLoginFromForgot').addEventListener('click', showLoginForm);
+
+    document.getElementById('toForgot').addEventListener('click', () => {
+      loginBox.classList.add('hidden');
+      registerBox.classList.add('hidden');
+      forgotBox.classList.remove('hidden');
+      authTitle.innerText = "Reset Password";
+    });
+
+    function showLoginForm() {
+      registerBox.classList.add('hidden');
+      forgotBox.classList.add('hidden');
+      loginBox.classList.remove('hidden');
+      authTitle.innerText = "Welcome to TaskGlobal";
+    }
+
+    // Account Creation / Registration
+    document.getElementById('registerSubmitBtn').addEventListener('click', () => {
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const password = document.getElementById('regPassword').value;
+
+      if (!name || !email || !password) {
+        alert("Please complete all registration fields.");
+        return;
+      }
+
+      const existingUser = users.find(u => u.email === email);
+      if (existingUser) {
+        alert("An account with this email already exists. Switching to Login.");
+        showLoginForm();
+        document.getElementById('loginEmail').value = email;
+        return;
+      }
+
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        password,
+        balance: 0.00,
+        tier: 'Starter Tier',
+        pendingTier: null,
+        completedTaskIds: [],
+        pendingTasks: {},
+        registeredAt: new Date().toLocaleDateString()
+      };
+
+      users.push(newUser);
+      saveUsers();
+      currentUser = newUser;
+      saveCurrentUser();
+      initDashboard();
+    });
+
+    // Account Login
+    document.getElementById('loginSubmitBtn').addEventListener('click', () => {
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+
+      const user = users.find(u => u.email === email && u.password === password);
+      if (user) {
+        currentUser = user;
+        saveCurrentUser();
+        initDashboard();
+      } else {
+        alert("Invalid email or password. Please make sure you registered an account first!");
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      currentUser = null;
+      localStorage.removeItem('tg_current_user');
+      dashboardSection.classList.add('hidden');
+      adminSection.classList.add('hidden');
+      userInfo.classList.add('hidden');
+      authSection.classList.remove('hidden');
+      showLoginForm();
+    });
+
+    // Send OTP Email
+    document.getElementById('sendOtpBtn').addEventListener('click', async () => {
+      const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+      if (!email) {
+        alert("Please enter your email address.");
+        return;
+      }
+
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        alert("No account found with this email on this device.");
+        return;
+      }
+
+      generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      otpTargetEmail = email;
+
+      const sendBtn = document.getElementById('sendOtpBtn');
+      sendBtn.innerText = "Sending Email...";
+      sendBtn.disabled = true;
+
+      try {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          to_email: email,
+          to_name: user.name,
+          reset_code: generatedOtp
+        });
+        alert("Verification OTP sent to your email!");
+        document.getElementById('otpVerifySection').classList.remove('hidden');
+        sendBtn.innerText = "Resend OTP";
+      } catch (err) {
+        console.error("EmailJS Error:", err);
+        alert("Failed to send OTP email. Please check your internet connection.");
+        sendBtn.innerText = "Send OTP via Email";
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    // Reset Password
+    document.getElementById('resetPasswordBtn').addEventListener('click', () => {
+      const inputOtp = document.getElementById('otpInput').value.trim();
+      const newPass = document.getElementById('newPassword').value;
+
+      if (inputOtp !== generatedOtp) {
+        alert("Invalid OTP code!");
+        return;
+      }
+      if (!newPass) {
+        alert("Please enter a new password.");
+        return;
+      }
+
+      const user = users.find(u => u.email === otpTargetEmail);
+      if (user) {
+        user.password = newPass;
+        saveUsers();
+        alert("Password reset successfully! Logging you in...");
+        currentUser = user;
+        saveCurrentUser();
+        initDashboard();
+      }
+    });
+
+    // Dashboard View Initialization
+    function initDashboard() {
+      authSection.classList.add('hidden');
+      adminSection.classList.add('hidden');
+      dashboardSection.classList.remove('hidden');
+      userInfo.classList.remove('hidden');
+
+      const freshUser = users.find(u => u.id === currentUser.id);
+      if (freshUser) currentUser = freshUser;
+
+      document.getElementById('navUserName').innerText = currentUser.name;
+      document.getElementById('navUserTier').innerText = currentUser.tier;
+      document.getElementById('currentTierTag').innerText = currentUser.tier;
+      document.getElementById('userBalance').innerText = currentUser.balance.toFixed(2);
+      document.getElementById('completedCount').innerText = currentUser.completedTaskIds ? currentUser.completedTaskIds.length : 0;
+
+      const pendingBanner = document.getElementById('pendingTierBanner');
+      if (currentUser.pendingTier) {
+        pendingBanner.classList.remove('hidden');
+        document.getElementById('pendingTierDetails').innerText = `You submitted an upgrade request for ${currentUser.pendingTier.tier} Plan ($${currentUser.pendingTier.price} USDT). Awaiting admin manual verification.`;
+      } else {
+        pendingBanner.classList.add('hidden');
+      }
+
+      renderTasks();
+    }
+
+    // Task Cards & 3-Minute Timers Rendering
+    function renderTasks() {
+      const container = document.getElementById('tasksList');
+      container.innerHTML = '';
+
+      if (!currentUser.pendingTasks) currentUser.pendingTasks = {};
+      if (!currentUser.completedTaskIds) currentUser.completedTaskIds = [];
+
+      defaultTasks.forEach(task => {
+        const isCompleted = currentUser.completedTaskIds.includes(task.id);
+        const pendingUntil = currentUser.pendingTasks[task.id];
+        const now = Date.now();
+
+        const taskCard = document.createElement('div');
+        taskCard.className = "card-bg p-4 rounded-xl flex justify-between items-center";
+
+        let actionBtnHTML = '';
+
+        if (isCompleted) {
+          actionBtnHTML = `<span class="bg-emerald-950 text-emerald-400 text-xs px-3 py-1.5 rounded-lg border border-emerald-500/30 flex items-center gap-1 font-semibold"><i class="fas fa-check-circle"></i> Completed</span>`;
+        } else if (pendingUntil && now < pendingUntil) {
+          const secondsRemaining = Math.ceil((pendingUntil - now) / 1000);
+          const mins = Math.floor(secondsRemaining / 60);
+          const secs = (secondsRemaining % 60).toString().padStart(2, '0');
+          actionBtnHTML = `<button disabled type="button" class="bg-amber-900/60 text-amber-300 text-xs px-3 py-1.5 rounded-lg border border-amber-500/40 font-mono"><i class="fas fa-clock animate-spin"></i> Pending (${mins}:${secs})</button>`;
+        } else if (pendingUntil && now >= pendingUntil) {
+          delete currentUser.pendingTasks[task.id];
+          currentUser.completedTaskIds.push(task.id);
+          currentUser.balance += task.reward;
+          saveUsers();
+          saveCurrentUser();
+          initDashboard();
+          return;
+        } else {
+          actionBtnHTML = `<button type="button" onclick="performTask(${task.id}, '${task.link}')" class="accent-btn px-3 py-1.5 rounded-lg text-xs font-bold shadow">Perform Task</button>`;
+        }
+
+        taskCard.innerHTML = `
+          <div>
+            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">${task.type}</div>
+            <div class="font-bold text-sm text-white">${task.title}</div>
+            <div class="text-xs text-gray-400">Reward: <strong class="text-emerald-400">$${task.reward.toFixed(2)} USDT</strong></div>
+          </div>
+          <div>${actionBtnHTML}</div>
+        `;
+
+        container.appendChild(taskCard);
+      });
+    }
+
+    // Perform Task Action
+    window.performTask = function(taskId, taskUrl) {
+      if (taskUrl && taskUrl !== '#') window.open(taskUrl, '_blank');
+
+      const completionTime = Date.now() + 180000; // 3 minutes countdown
+      if (!currentUser.pendingTasks) currentUser.pendingTasks = {};
+      currentUser.pendingTasks[taskId] = completionTime;
+
+      saveUsers();
+      saveCurrentUser();
+      initDashboard();
+    };
+
+    // Auto Refresh Task Timers
+    setInterval(() => {
+      if (currentUser && dashboardSection && !dashboardSection.classList.contains('hidden')) {
+        let needsRefresh = false;
+        if (currentUser.pendingTasks) {
+          const now = Date.now();
+          Object.keys(currentUser.pendingTasks).forEach(taskId => {
+            if (now >= currentUser.pendingTasks[taskId]) {
+              needsRefresh = true;
+            }
+          });
+        }
+        if (needsRefresh) {
+          initDashboard();
+        } else {
+          renderTasks();
+        }
+      }
+    }, 1000);
+
+    // Tier Upgrade Modal
+    let selectedUpgrade = null;
+    const upgradeModal = document.getElementById('upgradeModal');
+    const paymentDetails = document.getElementById('paymentDetails');
+
+    document.getElementById('openUpgradeModal').addEventListener('click', () => {
+      upgradeModal.classList.remove('hidden');
+    });
+
+    document.getElementById('closeUpgradeModal').addEventListener('click', () => {
+      upgradeModal.classList.add('hidden');
+      paymentDetails.classList.add('hidden');
+    });
+
+    document.querySelectorAll('.select-tier-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const tier = e.target.getAttribute('data-tier');
+        const price = e.target.getAttribute('data-price');
+        selectedUpgrade = { tier, price };
+
+        document.getElementById('selectedTierName').innerText = tier;
+        document.getElementById('selectedTierPrice').innerText = price;
+        paymentDetails.classList.remove('hidden');
+      });
+    });
+
+    document.getElementById('submitUpgradePayment').addEventListener('click', () => {
+      const ref = document.getElementById('paymentRef').value.trim();
+      if (!ref) {
+        alert("Please enter your transaction hash or reference.");
+        return;
+      }
+
+      const upgradeRequest = {
+        id: Date.now(),
+        userId: currentUser.id,
+        userName: currentUser.name,
+        userEmail: currentUser.email,
+        tier: selectedUpgrade.tier,
+        price: selectedUpgrade.price,
+        reference: ref,
+        date: new Date().toLocaleString()
+      };
+
+      pendingUpgrades.push(upgradeRequest);
+      localStorage.setItem('tg_pending_upgrades', JSON.stringify(pendingUpgrades));
+
+      currentUser.pendingTier = upgradeRequest;
+      saveUsers();
+      saveCurrentUser();
+
+      alert("Crypto transaction proof submitted! Your upgrade is now pending admin manual verification.");
+      upgradeModal.classList.add('hidden');
+      paymentDetails.classList.add('hidden');
+      initDashboard();
+    });
+
+    // Withdrawal Modal Logic
+    const withdrawModal = document.getElementById('withdrawModal');
+    document.getElementById('openWithdrawModal').addEventListener('click', () => {
+      withdrawModal.classList.remove('hidden');
+    });
+    document.getElementById('closeWithdrawModal').addEventListener('click', () => {
+      withdrawModal.classList.add('hidden');
+    });
+
+    document.getElementById('submitWithdrawBtn').addEventListener('click', () => {
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+      const address = document.getElementById('withdrawAddress').value.trim();
+
+      if (isNaN(amount) || amount < 5) {
+        alert("Minimum withdrawal amount is $5.00 USDT.");
+        return;
+      }
+      if (amount > currentUser.balance) {
+        alert("Insufficient balance.");
+        return;
+      }
+      if (!address || !address.startsWith('T')) {
+        alert("Please enter a valid TRC-20 USDT address.");
+        return;
+      }
+
+      currentUser.balance -= amount;
+      saveUsers();
+      saveCurrentUser();
+      alert(`Withdrawal request of $${amount.toFixed(2)} USDT submitted successfully!`);
+      withdrawModal.classList.add('hidden');
+      initDashboard();
+    });
+
+    // Secret Admin Panel
+    function openAdminPanel() {
+      dashboardSection.classList.add('hidden');
+      authSection.classList.add('hidden');
+      adminSection.classList.remove('hidden');
+      renderAdminView();
+    }
+
+    document.getElementById('closeAdminBtn').addEventListener('click', () => {
+      adminSection.classList.add('hidden');
+      if (currentUser) initDashboard();
+      else showLoginForm();
+    });
+
+    function renderAdminView() {
+      // Pending Tiers
+      const tierContainer = document.getElementById('adminPendingTiers');
+      tierContainer.innerHTML = '';
+
+      if (pendingUpgrades.length === 0) {
+        tierContainer.innerHTML = `<div class="text-xs text-gray-500 italic">No pending tier requests.</div>`;
+      } else {
+        pendingUpgrades.forEach((req) => {
+          const card = document.createElement('div');
+          card.className = "bg-slate-800 p-3 rounded-lg flex justify-between items-center text-xs";
+          card.innerHTML = `
+            <div>
+              <div class="font-bold text-white">${req.userName} (${req.userEmail})</div>
+              <div class="text-amber-400">Request: <strong>${req.tier} Plan ($${req.price} USDT)</strong></div>
+              <div class="text-gray-400 text-[10px] font-mono">TXID: ${req.reference} | ${req.date}</div>
+            </div>
+            <button type="button" onclick="approveTierUpgrade(${req.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded font-bold">
+              Approve
+            </button>
+          `;
+          tierContainer.appendChild(card);
+        });
+      }
+
+      // User Accounts Database
+      document.getElementById('totalUsersCount').innerText = users.length;
+      const userContainer = document.getElementById('adminUserList');
+      userContainer.innerHTML = '';
+
+      if (users.length === 0) {
+        userContainer.innerHTML = `<div class="text-xs text-gray-500 italic">No registered users found.</div>`;
+      } else {
+        users.forEach(u => {
+          const item = document.createElement('div');
+          item.className = "bg-slate-800/60 p-2.5 rounded-lg text-xs flex justify-between items-center border border-slate-700";
+          item.innerHTML = `
+            <div>
+              <div class="font-bold text-slate-200">${u.name} <span class="text-[10px] text-emerald-400 font-normal">(${u.tier})</span></div>
+              <div class="text-gray-400 text-[10px]">${u.email}</div>
+              <div class="text-gray-500 text-[9px]">Registered: ${u.registeredAt || 'N/A'}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold text-emerald-400">$${(u.balance || 0).toFixed(2)}</div>
+            </div>
+          `;
+          userContainer.appendChild(item);
+        });
+      }
+    }
+
+    window.approveTierUpgrade = function(requestId) {
+      const index = pendingUpgrades.findIndex(r => r.id === requestId);
+      if (index === -1) return;
+
+      const req = pendingUpgrades[index];
+      const targetUser = users.find(u => u.id === req.userId);
+
+      if (targetUser) {
+        targetUser.tier = req.tier + " Tier";
+        targetUser.pendingTier = null;
+        saveUsers();
+      }
+
+      pendingUpgrades.splice(index, 1);
+      localStorage.setItem('tg_pending_upgrades', JSON.stringify(pendingUpgrades));
+
+      alert(`Approved ${req.tier} upgrade for ${req.userName}!`);
+      renderAdminView();
+    };
+
+    function saveUsers() {
+      localStorage.setItem('tg_users', JSON.stringify(users));
+    }
+
+    function saveCurrentUser() {
+      localStorage.setItem('tg_current_user', JSON.stringify(currentUser));
+    }
+
+    if (currentUser) {
+      initDashboard();
+    }
+  </script>
 </body>
 </html>
